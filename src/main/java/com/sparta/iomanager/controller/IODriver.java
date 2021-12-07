@@ -13,7 +13,7 @@ public class IODriver {
             System.out.println(entry.getKey() + "/" + entry.getValue().getDob());
         }
 
-        //OutputManager.outPutResults(employeeMap);
+        OutputManager.outPutResults(employeeMap);
 
         System.out.println("Map Size "+ employeeMap.size());
     }
