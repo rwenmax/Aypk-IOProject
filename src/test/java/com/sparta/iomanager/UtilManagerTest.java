@@ -8,13 +8,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IOManagerTest {
-    @Test
-    @DisplayName("Check if file exists")
-    public void checkFileExists(String f){
-        File file = new File(f);
-        assertTrue(file.exists());
-    }
+public class UtilManagerTest {
 
     @Test
     public void checkEmail(String email){
@@ -25,4 +19,13 @@ public class IOManagerTest {
         Pattern pat = Pattern.compile(email);
         assertTrue(pat.matcher(email).matches());
     }
+
+
+
+
+
+
+
+
+
 }

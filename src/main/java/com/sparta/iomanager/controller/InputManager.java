@@ -1,6 +1,7 @@
 package com.sparta.iomanager.controller;
 
 import com.sparta.iomanager.model.Employee;
+import com.sparta.iomanager.model.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,15 +43,19 @@ public class InputManager {
                     employeeHashMap.put(id, employee);
                 } catch (NumberFormatException e){
                     e.printStackTrace();
+                    Logger.logger.warn(Logger.WARNING, e);
                 } catch (ArrayIndexOutOfBoundsException e){
                     e.printStackTrace();
+                    Logger.logger.warn(Logger.WARNING, e);
                 } catch (ParseException e){
                     e.printStackTrace();
+                    Logger.logger.warn(Logger.WARNING, e);
                 }
             }
         } catch (IOException e){
             //Log the error
             System.out.println("Unable to open file!");
+            Logger.logger.warn(Logger.WARNING, e);
             e.printStackTrace();
         }
         return employeeHashMap;
