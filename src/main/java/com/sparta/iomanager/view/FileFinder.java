@@ -5,10 +5,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FileFinder {
-    //Search the folder/i,e list all the files with their names...
-    public String findFile(){
-        Scanner scanner = new Scanner(System.in);
+
+    private String mainFolder;
+    private String filePath;
+
+    public String getDirectory(){
         File dir = new File(System.getProperty("user.dir"));
+        String[] ar = dir.toString().split("\\\\");
+        mainFolder = ar[ar.length-1];
+        System.out.println(mainFolder);
+        filePath = findFile(dir.toString());
+        return filePath;
+    }
+
+    //Search the folder/i,e list all the files with their names...
+    public String findFile(String path){
+        Scanner scanner = new Scanner(System.in);
+        File dir = new File(path);
         Boolean foundFile = false;
         System.out.println("Search for the file you want to be read");
         while (!foundFile){
@@ -74,6 +87,10 @@ public class FileFinder {
         for (int i = 0; i < dirs.length-1; i++){
             stringBuilder.append(dirs[i] + "\\");
         }
+        if (!(stringBuilder.toString().contains(mainFolder))){
+            return file.toString();
+        }
+
         return stringBuilder.toString();
     }
 }
