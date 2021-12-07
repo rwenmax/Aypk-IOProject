@@ -65,13 +65,14 @@ public class InputManager {
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-
+            System.out.println(employee.toString());
             if (employeeHashMap.containsKey(id))
             {
                 duplicateValues.put(id, employee);
             }
             employeeHashMap.put(id, employee);
         }
+
         return employeeHashMap;
     }
 }
