@@ -54,15 +54,5 @@ public class Employee extends Person {
         this.salary = salary;
     }
 
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "employeeID=" + employeeID +
-                ", email='" + email + '\'' +
-                ", doJ=" + doJ +
-                ", salary=" + salary +
-                '}';
-    }
-
 
 }

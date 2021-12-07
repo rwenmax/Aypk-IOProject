@@ -82,4 +82,11 @@ public class InputManager {
     public Map<Integer, Employee> getDuplicateValues() {
         return duplicateValues;
     }
+
+    public Map<Integer, Employee> getEmployeeHashMap() {
+        return employeeHashMap;
+    }
+    public Map<Integer, Employee> getDuplicateValues() {
+        return duplicateValues;
+    }
 }
