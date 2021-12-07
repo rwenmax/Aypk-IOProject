@@ -6,6 +6,7 @@ import com.sparta.iomanager.model.util.UtilManager;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,6 @@ public class InputManager {
     email = 6, dob = 7, doj = 8, salary = 9;
     private Map<Integer, Employee> employeeHashMap = new HashMap<>();
     private Map<Integer, Employee> duplicateValues = new HashMap<>();
-    Employee employee = new Employee();
     public String[][] readFile(String inFile){
         String[][] fields = new String[0][0];
         try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
@@ -41,8 +41,9 @@ public class InputManager {
     }
 
     public Map insertion(String[][] fields){
-        Employee employee = new Employee();
+        ArrayList<Employee> employeesList = new ArrayList<>();
         for (int i = 0; i < fields.length; i++) {
+            Employee employee = new Employee();
             int id = 0;
             if (UtilManager.checkInteger(fields[i][ID])) {
                 id = Integer.parseInt(fields[i][ID]);
@@ -65,14 +66,11 @@ public class InputManager {
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-            System.out.println(employee.toString());
-            if (employeeHashMap.containsKey(id))
-            {
+            if (employeeHashMap.containsKey(id)) {
                 duplicateValues.put(id, employee);
             }
             employeeHashMap.put(id, employee);
         }
-
-        return employeeHashMap;
+       return employeeHashMap;
     }
 }
