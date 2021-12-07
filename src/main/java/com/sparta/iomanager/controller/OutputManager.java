@@ -1,4 +1,4 @@
-package com.sparta.controller;
+package com.sparta.iomanager.controller;
 
 public class OutputManager {
 }

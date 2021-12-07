@@ -1,24 +1,20 @@
-package com.sparta.controller;
+package com.sparta.iomanager.controller;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
+import com.sparta.iomanager.model.Employee;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IODriver {
-    public static void readFile(String inFile) {
-        try (BufferedReader in = new BufferedReader(new FileReader(inFile))) {
-            String lineOfText;
-            while ((lineOfText = in.readLine()) != null) {
-                System.out.println(Arrays.toString(lineOfText.split(",")));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        readFile("EmployeeRecords.csv");
+        InputManager inputManager = new InputManager();
+        Map<Integer, Employee> employeeMap;
+        employeeMap = inputManager.readFile("EmployeeRecords.csv");
+        for (Map.Entry<Integer, Employee> entry : employeeMap.entrySet()) {
+            System.out.println(entry.getKey() + "/" + entry.getValue().getDob());
+        }
+
+        System.out.println("Map Size "+ employeeMap.size());
+
     }
 }

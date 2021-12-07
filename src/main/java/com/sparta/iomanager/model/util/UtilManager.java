@@ -1,4 +1,4 @@
-package com.sparta.model.util;
+package com.sparta.iomanager.model.util;
 
 public class UtilManager {
 }
