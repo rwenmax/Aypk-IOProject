@@ -12,27 +12,28 @@ import java.util.Map;
 
 public class InputManager {
     final int ID = 0, toc = 1, firstName = 2, middleInitial = 3, lastName = 4, gender = 5,
-    email = 6, dob = 7, doj = 8, salary = 9;
+            email = 6, dob = 7, doj = 8, salary = 9;
     private Map<Integer, Employee> employeeHashMap = new HashMap<>();
     private Map<Integer, Employee> duplicateValues = new HashMap<>();
-    public String[][] readFile(String inFile){
+
+    public String[][] readFile(String inFile) {
         String[][] fields = new String[0][0];
-        try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
+        try (BufferedReader inp = new BufferedReader(new FileReader(inFile))) {
             int lines = 0;
             while (inp.readLine() != null) lines++;
             fields = new String[--lines][10];
             BufferedReader in = new BufferedReader(new FileReader(inFile));
             in.readLine();
             String lineOfText;
-            for (int i = 0; i < lines; i++){
+            for (int i = 0; i < lines; i++) {
                 lineOfText = in.readLine();
                 String[] tfields = lineOfText.split(",");
-                for (int j = 0; j < tfields.length; j++){
+                for (int j = 0; j < tfields.length; j++) {
                     fields[i][j] = tfields[j];
                 }
             }
             in.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             //Log the error
             System.out.println("Unable to open file!");
             e.printStackTrace();
@@ -40,7 +41,7 @@ public class InputManager {
         return fields;
     }
 
-    public Map insertion(String[][] fields){
+    public Map insertion(String[][] fields) {
         ArrayList<Employee> employeesList = new ArrayList<>();
         for (int i = 0; i < fields.length; i++) {
             Employee employee = new Employee();
@@ -71,6 +72,14 @@ public class InputManager {
             }
             employeeHashMap.put(id, employee);
         }
-       return employeeHashMap;
+        return employeeHashMap;
+    }
+
+    public Map<Integer, Employee> getEmployeeHashMap() {
+        return employeeHashMap;
+    }
+
+    public Map<Integer, Employee> getDuplicateValues() {
+        return duplicateValues;
     }
 }
