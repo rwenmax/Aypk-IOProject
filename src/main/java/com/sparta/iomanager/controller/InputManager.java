@@ -73,4 +73,11 @@ public class InputManager {
         }
        return employeeHashMap;
     }
+
+    public Map<Integer, Employee> getEmployeeHashMap() {
+        return employeeHashMap;
+    }
+    public Map<Integer, Employee> getDuplicateValues() {
+        return duplicateValues;
+    }
 }

@@ -1,6 +1,7 @@
 package com.sparta.iomanager.controller;
 
 import com.sparta.iomanager.model.Employee;
+import com.sparta.iomanager.view.Report;
 
 import java.util.Map;
 
@@ -15,6 +16,6 @@ public class IODriver {
 
         //OutputManager.outPutResults(employeeMap);
 
-        System.out.println("Map Size "+ employeeMap.size());
+        Report.runReport(inputManager);
     }
 }
