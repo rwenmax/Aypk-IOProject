@@ -8,11 +8,14 @@ public class FileFinder {
 
     private String rootFolder;
     private String filePath;
+    private String regexSeperator, stringSeperator;
 
     public String findFile(){
         File dir = new File(System.getProperty("user.dir"));
-        String[] ar = dir.toString().split("\\\\");
-        rootFolder = ar[0] + "\\";
+        stringSeperator = File.separator;
+        regexSeperator = File.separator + File.separator;
+        String[] ar = dir.toString().split(regexSeperator);
+        rootFolder = ar[0] + stringSeperator;
         System.out.println(rootFolder);
         filePath = getDirectory(dir.toString());
         return filePath;
@@ -33,7 +36,7 @@ public class FileFinder {
             String[] tnames = new String[0];
             ArrayList<String> names = new ArrayList<>();
             for (int i = 0; i < matchingFiles.length; i++){
-                tnames = matchingFiles[i].toString().split("\\\\");
+                tnames = matchingFiles[i].toString().split(regexSeperator);
                 names.add(tnames[tnames.length-1]);
                 System.out.println(tnames[tnames.length-1].toString());
             }
@@ -57,7 +60,7 @@ public class FileFinder {
                     if (names.get(i).equals(userInput)) {
                         if (userInput.contains(".csv")){
                             // is file
-                            dir = new File(dir.toString() + "\\" + userInput);
+                            dir = new File(dir.toString() + stringSeperator + userInput);
                             foundFile = true;
                             validInput = true;
                         }
@@ -66,7 +69,7 @@ public class FileFinder {
                         }
                         else{
                             // is folder
-                            dir = new File(dir.toString() + "\\" + userInput);
+                            dir = new File(dir.toString() + stringSeperator + userInput);
                             validInput = true;
                             continue;
                         }
@@ -86,10 +89,10 @@ public class FileFinder {
             System.err.println("Cannot go back!");
             return file.toString();
         }
-        String[] dirs = file.toString().split("\\\\");
+        String[] dirs = file.toString().split(regexSeperator);
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < dirs.length-1; i++){
-            stringBuilder.append(dirs[i] + "\\");
+            stringBuilder.append(dirs[i] + stringSeperator);
         }
         return stringBuilder.toString();
     }
