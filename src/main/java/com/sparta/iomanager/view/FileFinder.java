@@ -6,20 +6,20 @@ import java.util.Scanner;
 
 public class FileFinder {
 
-    private String mainFolder;
+    private String rootFolder;
     private String filePath;
 
-    public String getDirectory(){
+    public String findFile(){
         File dir = new File(System.getProperty("user.dir"));
         String[] ar = dir.toString().split("\\\\");
-        mainFolder = ar[ar.length-1];
-        System.out.println(mainFolder);
-        filePath = findFile(dir.toString());
+        rootFolder = ar[0] + "\\";
+        System.out.println(rootFolder);
+        filePath = getDirectory(dir.toString());
         return filePath;
     }
 
     //Search the folder/i,e list all the files with their names...
-    public String findFile(String path){
+    public String getDirectory(String path){
         Scanner scanner = new Scanner(System.in);
         File dir = new File(path);
         Boolean foundFile = false;
@@ -82,15 +82,15 @@ public class FileFinder {
     }
 
     private String goBack(File file){
+        if (file.toString().equals(rootFolder)){
+            System.err.println("Cannot go back!");
+            return file.toString();
+        }
         String[] dirs = file.toString().split("\\\\");
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < dirs.length-1; i++){
             stringBuilder.append(dirs[i] + "\\");
         }
-        if (!(stringBuilder.toString().contains(mainFolder))){
-            return file.toString();
-        }
-
         return stringBuilder.toString();
     }
 }

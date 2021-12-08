@@ -12,7 +12,7 @@ public class IODriver {
 
         InputManager inputManager = new InputManager();
         Map<Integer, Employee> employeeMap;
-        employeeMap = inputManager.insertion(inputManager.readFile(fileFinder.getDirectory()));
+        employeeMap = inputManager.insertion(inputManager.readFile(fileFinder.findFile()));
         for (Map.Entry<Integer, Employee> entry : employeeMap.entrySet()) {
             System.out.println(entry.getKey() + "/" + entry.getValue().getDob());
         }
