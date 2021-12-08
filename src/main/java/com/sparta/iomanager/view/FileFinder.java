@@ -13,7 +13,8 @@ public class FileFinder {
     public String findFile(){
         File dir = new File(System.getProperty("user.dir"));
         stringSeperator = File.separator;
-        regexSeperator = File.separator + File.separator;
+        regexSeperator = File.separator;
+        if (stringSeperator.equals("\\")) regexSeperator += File.separator;
         String[] ar = dir.toString().split(regexSeperator);
         rootFolder = ar[0] + stringSeperator;
         System.out.println(rootFolder);
