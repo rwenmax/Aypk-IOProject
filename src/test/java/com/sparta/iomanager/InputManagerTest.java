@@ -18,17 +18,15 @@ public class InputManagerTest {
 
     @BeforeEach
     public void setUpAll() {
-        {
-            try {
-                file = new BufferedReader(new FileReader(fileName));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            file = new BufferedReader(new FileReader(fileName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * Checks  if the file exists
+     * Checks if the file exists
      * @param strings
      */
     @ParameterizedTest
