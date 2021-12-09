@@ -67,7 +67,7 @@ public class InputManager{
                     final int k = i;
                     AtomicInteger counter = new AtomicInteger(-1);
                     Stream<String> stream = Pattern.compile(",").splitAsStream(lineOfText);
-                    stream.forEach(e -> fields[k][counter.incrementAndGet()] = e);
+                    stream.forEach(e -> insertArray(k, counter.incrementAndGet(),e));
                 }
             } catch (IOException e){
                 System.out.println("Unable to open file!");
@@ -236,6 +236,10 @@ public class InputManager{
 
     private synchronized void putDuplicateValues(int id, Employee employee) {
         duplicateValues.put(id, employee);
+    }
+
+    private synchronized void insertArray(int x, int y, String value){
+        fields[x][y] = value;
     }
 
     public Map<Integer, Employee> getEmployeeHashMap() {
