@@ -1,8 +1,8 @@
 package com.sparta.iomanager;
 
-import com.sparta.iomanager.controller.InputManager;
 import com.sparta.iomanager.model.util.Constants;
 import com.sparta.iomanager.model.util.UtilManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,96 +13,125 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InputManagerTest {
-    InputManager inputManager = new InputManager();
     BufferedReader file;
+    final String fileName = "EmployeeRecords.csv";
 
-    {
+    @BeforeEach
+    public void setUpAll() {
         try {
-            file = new BufferedReader(new FileReader("EmployeeRecords.csv"));
+            file = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-
+    /**
+     * Checks if the file exists
+     * @param strings
+     */
     @ParameterizedTest
     @DisplayName("Check if the file exists")
-    @ValueSource(strings = {"EmployeeRecords.csv"})
+    @ValueSource(strings = {fileName})
     public void checkFileExists(String strings) {
         File file = new File(strings);
         assertTrue(file.exists());
     }
 
+    /**
+     * Checks the extension of the file
+     * @param strings
+     */
     @ParameterizedTest
     @DisplayName("Check if the file is the correct extension")
-    @ValueSource(strings = {"EmployeeRecords.csv"})
+    @ValueSource(strings = {fileName})
     public void checkFileIsCorrectExtension(String strings) {
         String name = strings.substring(strings.length() - 3);
         assertEquals("csv", name);
     }
 
-    @ParameterizedTest
+    /**
+     * Reads the first line and compares to a constant of type string
+     * @throws IOException
+     */
+    @Test
     @DisplayName("Check if first line is read")
-    @ValueSource(strings = {"EmployeeRecords.csv"})
-    public void checkCSVTitles(String filename) throws IOException {
-        String expected = "Emp ID,Name Prefix,First Name,Middle Initial,Last Name," +
-                "Gender,E Mail,Date of Birth,Date of Joining,Salary";
-        String firstLine = file.readLine();
-        assertEquals(expected, firstLine);
+    public void checkCSVTitles() throws IOException {
+        assertEquals(Constants.CSV_HEADER, file.readLine());
     }
 
+    /**
+     * reads the first line and the length should be 10
+     * @throws IOException
+     */
     @Test
     @DisplayName("Checks if 10 values are read")
     public void CheckNumberOfFields() throws IOException {
-        String[] firstLine = file.readLine().split(",");
-        assertEquals(10, firstLine.length);
+        String[] firstLine = file.readLine().split(Constants.CSV_SEPARATOR);
+        assertEquals(Constants.CSV_LENGTH, firstLine.length);
     }
 
+    /**
+     * Checks if the ID that is read in is of type Integer
+     * @throws IOException
+     */
     @Test
     @DisplayName("Checks the first id")
     public void checkIdMatch() throws IOException {
         file.readLine();
-        String[] firstLine = file.readLine().split(",");
-        String x = firstLine[0];
-        int n = Integer.parseInt(x);
-        assertEquals(Integer.parseInt(x), n);
+        String[] firstLine = file.readLine().split(Constants.CSV_SEPARATOR);
+        String id = firstLine[Constants.ID];
+        assertEquals(Integer.parseInt(id), Integer.parseInt(id));
     }
 
+    /**
+     * Reads in all the lines and matches them to a predefined list of titles
+     * @throws IOException
+     */
     @Test
-    @DisplayName("Checks if the id stored is the correct format")
-    public void checkIdFormat() throws IOException {
-        file.readLine();
-        String[] firstLine = file.readLine().split(",");
-        assertEquals(6, firstLine[0].length());
-    }
-
-    @Test
-    @DisplayName("Checks the title of courtesy") // String array of titles and check
+    @DisplayName("Checks the title of courtesy")
     public void checkTocFormat() throws IOException {
-        file.readLine(); // skip header
-        Set<String> titlesFromFile = new HashSet<>(); // no duplicates
+        file.readLine();
+        Set<String> titlesFromFile = new HashSet<>();
         String line;
         while((line = file.readLine()) != null){
-            titlesFromFile.add(line.split(",")[1]);
+            titlesFromFile.add(line.split(Constants.CSV_SEPARATOR)[Constants.TOC]);
         }
         assertTrue(Constants.TITLES.containsAll(titlesFromFile));
     }
-//
-//    @Test
-//    @DisplayName("") // checks if only 1 char middle name
-//    public void checkMiddleNameChar(){
-//
-//    }
-//
-//    @Test
-//    @DisplayName("") // check email is valid
-//    public void checkNameFormat(){
-//        file
-//    }
-//
-//    @Test
-//    @DisplayName("") // check date from the file
-//    public void checkDateFormat(){
-//
 
+    /**
+     * Reads in all the lines and validates the name format
+     * @throws IOException
+     */
+    @Test
+    @DisplayName("Check first name contains only letters")
+    public void checkFirstNameFormat() throws IOException{
+        file.readLine();
+        Set<String> namesFromFiles = new HashSet<>();
+        String line;
+        while((line = file.readLine()) != null){
+            namesFromFiles.add(line.split(Constants.CSV_SEPARATOR)[Constants.FIRST_NAME]);
+        }
+        for(String name : namesFromFiles){
+            assertTrue(UtilManager.nameValidation(name));
+        }
+    }
+
+    /**
+     * Reads in all the line and validates the last name format
+     * @throws IOException
+     */
+    @Test
+    @DisplayName("Check last name contains only letters")
+    public void checkLastNameFormat() throws IOException{
+        file.readLine();
+        Set<String> namesFromFiles = new HashSet<>();
+        String line;
+        while((line = file.readLine()) != null){
+            namesFromFiles.add(line.split(Constants.CSV_SEPARATOR)[Constants.LAST_NAME]);
+        }
+        for(String name : namesFromFiles){
+            assertTrue(UtilManager.nameValidation(name));
+        }
+    }
 }

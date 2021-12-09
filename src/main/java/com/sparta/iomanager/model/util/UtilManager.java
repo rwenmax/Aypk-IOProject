@@ -46,7 +46,7 @@ public class UtilManager {
      * @return
      */
     public static boolean genderValidation(String gender){
-        return Constants.GENDER.contains(gender);
+        return Constants.GENDER_LIST.contains(gender);
     }
 
     /**
