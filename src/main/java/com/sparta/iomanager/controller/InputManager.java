@@ -67,7 +67,7 @@ public class InputManager{
                     final int k = i;
                     AtomicInteger counter = new AtomicInteger(-1);
                     Stream<String> stream = Pattern.compile(",").splitAsStream(lineOfText);
-                    stream.forEach(e -> fields[k][counter.incrementAndGet()] = e);
+                    stream.forEach(e -> insertArray(k, counter.incrementAndGet(),e));
                 }
             } catch (IOException e){
                 System.out.println("Unable to open file!");
@@ -177,7 +177,7 @@ public class InputManager{
                 if (UtilManager.checkInteger(fieldArray[i][SALARY])) employee.setSalary(Integer.parseInt(fieldArray[i][SALARY]));
 
                 if (UtilManager.initialsValidation(fieldArray[i][MIDDLE_INITIAL])) employee.setMiddleInitial(fieldArray[i][MIDDLE_INITIAL].charAt(0));
-                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setMiddleInitial(fieldArray[i][GENDER].charAt(0));
+                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setGender(fieldArray[i][GENDER].charAt(0));
 
                 if (UtilManager.prefixValidation(fieldArray[i][TOC])) employee.setToc(fieldArray[i][TOC]);
                 if (UtilManager.nameValidation(fieldArray[i][FIRST_NAME])) employee.setFirstName(fieldArray[i][FIRST_NAME]);
@@ -236,6 +236,10 @@ public class InputManager{
 
     private synchronized void putDuplicateValues(int id, Employee employee) {
         duplicateValues.put(id, employee);
+    }
+
+    private synchronized void insertArray(int x, int y, String value){
+        fields[x][y] = value;
     }
 
     public Map<Integer, Employee> getEmployeeHashMap() {
