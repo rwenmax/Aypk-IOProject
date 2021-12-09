@@ -7,9 +7,11 @@ import java.sql.SQLException;
 public class StatementFactory {
     private static PreparedStatement createStatement = null;
     private static PreparedStatement insertStatement = null;
+    private static PreparedStatement selectEmployeeStatement = null;
     private static PreparedStatement deleteStatement = null;
     private static PreparedStatement updateStatement = null;
     private static PreparedStatement dropStatement = null;
+    private static PreparedStatement selectAllEmployeeStatement = null;
 
 
 
@@ -27,6 +29,17 @@ public class StatementFactory {
         }
         return insertStatement;
     }
+
+    public static PreparedStatement getAllEmployee() throws SQLException, IOException{
+        if (selectAllEmployeeStatement == null){
+            selectAllEmployeeStatement = ConnectionFactory.getConnection().prepareStatement("SELECT * FROM Employee");
+        }
+        return selectAllEmployeeStatement;
+    }
+
+
+
+
 
     public static PreparedStatement getCreateStatement() throws SQLException, IOException{
         if (createStatement == null){
@@ -46,7 +59,19 @@ public class StatementFactory {
         return createStatement;
     }
 
+    public static PreparedStatement getEmployeeStatement() throws SQLException, IOException {
+        if (selectEmployeeStatement == null)
+        {
+            selectEmployeeStatement = ConnectionFactory.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ?");
+        }
+        return selectEmployeeStatement;
+    }
 
+
+
+
+
+/*
     public static void closeStatement() throws SQLException {
         if (insertStatement != null) insertStatement.close();
         if (createStatement != null) createStatement.close();
@@ -54,6 +79,7 @@ public class StatementFactory {
         if (updateStatement !=null) updateStatement.close();
         if (dropStatement !=null) dropStatement.close();
     }
+*/
 
 
 

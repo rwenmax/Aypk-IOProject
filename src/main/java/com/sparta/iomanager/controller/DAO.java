@@ -4,6 +4,7 @@ import com.sparta.iomanager.model.Employee;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,9 @@ public interface DAO {
     //CREATE table and INSERT
     boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException;
     //SELECT ALL
-    List<Employee> getAllEmployee();
+    HashMap<Integer, Employee> getEmployee() throws SQLException, IOException;
     //SELECT
-    Employee getEmployee(int employeeID);
+    HashMap<Integer, Employee> getEmployee(int employeeID) throws SQLException, IOException;
     //UPDATE
     int updateEmployee(Employee employee);
     //DELETE
