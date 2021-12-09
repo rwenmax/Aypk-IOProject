@@ -4,13 +4,14 @@ import com.sparta.iomanager.model.Employee;
 import com.sparta.iomanager.model.util.UtilManager;
 
 import java.io.BufferedReader;
-import java.io.FileDescriptor;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class InputManager{
     public class ThreadedRead implements Runnable{
@@ -44,8 +45,39 @@ public class InputManager{
             threadsFinished++;
         }
     }
-    final int ID = 0, toc = 1, firstName = 2, middleInitial = 3, lastName = 4, gender = 5,
-            email = 6, dob = 7, doj = 8, salary = 9;
+    public class ThreadedStreamRead implements Runnable{
+
+        String inFile;
+        int start, end;
+        public ThreadedStreamRead(String inFile, int start, int end){
+            this.inFile = inFile;
+            this.start = start;
+            this.end = end;
+        }
+        @Override
+        public void run() {
+            try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
+                inp.readLine();
+                for (int i = 0; i < start; i++){
+                    inp.readLine();
+                }
+                String lineOfText;
+                for (int i = start; i < end; i++) {
+                    lineOfText = inp.readLine();
+                    final int k = i;
+                    AtomicInteger counter = new AtomicInteger(-1);
+                    Stream<String> stream = Pattern.compile(",").splitAsStream(lineOfText);
+                    stream.forEach(e -> fields[k][counter.incrementAndGet()] = e);
+                }
+            } catch (IOException e){
+                System.out.println("Unable to open file!");
+                e.printStackTrace();
+            }
+            threadsFinished++;
+        }
+    }
+    final int ID = 0, TOC = 1, FIRST_NAME = 2, MIDDLE_INITIAL = 3, LAST_NAME = 4, GENDER = 5,
+            EMAIL = 6, DOB = 7, DOJ = 8, SALARY = 9;
     private Map<Integer, Employee> employeeHashMap = new HashMap<>();
     private Map<Integer, Employee> duplicateValues = new HashMap<>();
 
@@ -88,6 +120,42 @@ public class InputManager{
         }
         return fields;
     }
+    public String[][] readStreamFile(String inFile){
+        threadsFinished = 0;
+        try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
+            inp.readLine();
+            int lines = 0;
+            while (inp.readLine() != null) lines++;
+            fields = new String[lines][10];
+            int thread1, thread2, thread3;
+
+            thread1 = (int)(lines*0.25);
+            thread2 = (int)(lines*0.5);
+            thread3 = (int)(lines*0.75);
+
+            ThreadedStreamRead threadedRead1 = new ThreadedStreamRead(inFile, 0, thread1);
+            Thread t1 = new Thread(threadedRead1);
+            t1.start();
+
+            ThreadedStreamRead threadedRead2 = new ThreadedStreamRead(inFile, thread1, thread2);
+            Thread t2 = new Thread(threadedRead2);
+            t2.start();
+
+            ThreadedStreamRead threadedRead3 = new ThreadedStreamRead(inFile, thread2, thread3);
+            Thread t3 = new Thread(threadedRead3);
+            t3.start();
+
+            ThreadedStreamRead threadedRead4 = new ThreadedStreamRead(inFile, thread3, lines);
+            Thread t4 = new Thread(threadedRead4);
+            t4.start();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        while(threadsFinished < 4){
+            System.out.println(threadsFinished);
+        }
+        return fields;
+    }
 
     public class ThreadedInsertion implements Runnable{
         String[][] fieldArray = new String[0][0];
@@ -106,20 +174,20 @@ public class InputManager{
                     id = Integer.parseInt(fieldArray[i][ID]);
                     employee.setEmployeeID(id);
                 }
-                if (UtilManager.checkInteger(fieldArray[i][salary])) employee.setSalary(Integer.parseInt(fieldArray[i][salary]));
+                if (UtilManager.checkInteger(fieldArray[i][SALARY])) employee.setSalary(Integer.parseInt(fieldArray[i][SALARY]));
 
-                if (UtilManager.initialsValidation(fieldArray[i][middleInitial])) employee.setMiddleInitial(fieldArray[i][middleInitial].charAt(0));
-                if (UtilManager.genderValidation(fieldArray[i][gender])) employee.setMiddleInitial(fieldArray[i][gender].charAt(0));
+                if (UtilManager.initialsValidation(fieldArray[i][MIDDLE_INITIAL])) employee.setMiddleInitial(fieldArray[i][MIDDLE_INITIAL].charAt(0));
+                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setMiddleInitial(fieldArray[i][GENDER].charAt(0));
 
-                if (UtilManager.prefixValidation(fieldArray[i][toc])) employee.setToc(fieldArray[i][toc]);
-                if (UtilManager.nameValidation(fieldArray[i][firstName])) employee.setFirstName(fieldArray[i][firstName]);
-                if (UtilManager.nameValidation(fieldArray[i][lastName])) employee.setLastName(fieldArray[i][lastName]);
-                if (UtilManager.emailValidation(fieldArray[i][email])) employee.setEmail(fieldArray[i][email]);
+                if (UtilManager.prefixValidation(fieldArray[i][TOC])) employee.setToc(fieldArray[i][TOC]);
+                if (UtilManager.nameValidation(fieldArray[i][FIRST_NAME])) employee.setFirstName(fieldArray[i][FIRST_NAME]);
+                if (UtilManager.nameValidation(fieldArray[i][LAST_NAME])) employee.setLastName(fieldArray[i][LAST_NAME]);
+                if (UtilManager.emailValidation(fieldArray[i][EMAIL])) employee.setEmail(fieldArray[i][EMAIL]);
 
                 try {
-                    Date date = UtilManager.setDateFormat(fieldArray[i][dob]);
+                    Date date = UtilManager.setDateFormat(fieldArray[i][DOB]);
                     if (UtilManager.dobValidation(date)) employee.setDob(date);
-                    date = UtilManager.setDateFormat(fieldArray[i][doj]);
+                    date = UtilManager.setDateFormat(fieldArray[i][DOJ]);
                     if (UtilManager.dojValidation(date)) employee.setDoJ(date);
                 } catch (NullPointerException e) {
                     e.printStackTrace();

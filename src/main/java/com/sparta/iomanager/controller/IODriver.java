@@ -11,32 +11,20 @@ import java.util.Map;
 
 public class IODriver {
     public static void main(String[] args) throws SQLException, IOException {
-        long start = 0;
-        long end = 0;
-
         FileFinder fileFinder = new FileFinder();
 
         InputManager inputManager = new InputManager();
         Map<Integer, Employee> employeeMap;
-        start = System.nanoTime();
-        employeeMap = inputManager.insertion(inputManager.readFile(fileFinder.findFile()));
-        end = System.nanoTime();
+        long startRead = System.nanoTime();
+        employeeMap = inputManager.insertion(inputManager.readStreamFile(fileFinder.findFile()));
+        long endRead = System.nanoTime();
+        long startSQL = System.nanoTime();
+        new EmployeeDaoImpl().dropTable();
+        new EmployeeDaoImpl().createTable();
+        new EmployeeDaoImpl().insertEmployee(employeeMap);
+        long endSQL = System.nanoTime();
+        OutputManager.outPutResults(employeeMap);
 
-        long startTime  = System.nanoTime();
-       // new EmployeeDaoImpl().dropTable();
-       // new EmployeeDaoImpl().createTable();
-        //new EmployeeDaoImpl().insertEmployee(employeeMap);
-        System.out.println("Time taken to insertData file: " + ((System.nanoTime()-startTime)/1000000) + " ms");
-
-        HashMap<Integer, Employee> employee2 = new EmployeeDaoImpl().getEmployee();
-        OutputManager.outPutResults(employee2);
-
-
-
-        //OutputManager.outPutResults(employeeMap);
-
-        System.out.println("Time taken to read file: " + ((end-start)/1000000) + " ms");
-
-        Report.runReport(inputManager);
+        Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
 }
