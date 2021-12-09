@@ -19,6 +19,7 @@ public class StatementFactory {
         if (dropStatement == null){
             dropStatement = ConnectionFactory.getConnection().prepareStatement("DROP TABLE IF EXISTS Employee");
         }
+
         return dropStatement;
     }
 
@@ -27,6 +28,7 @@ public class StatementFactory {
         if (insertStatement == null){
             insertStatement = ConnectionFactory.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
         }
+
         return insertStatement;
     }
 

@@ -3,13 +3,16 @@ package com.sparta.iomanager.controller;
 import com.sparta.iomanager.model.Employee;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EmployeeDaoImpl implements DAO{
     /*establish connection first */
@@ -30,16 +33,250 @@ public class EmployeeDaoImpl implements DAO{
         try(PreparedStatement statement = StatementFactory.getDropStatement()){
             statement.executeUpdate();
         }
-        //ConnectionFactory.closeConnection();
-        //StatementFactory.closeStatement();
-        //ConnectionFactory.closeConnection();
+        ConnectionFactory.closeConnection();
+    }
+
+
+/*
+
+    class ThreadedProcess implements Runnable{
+        private Map<Integer, Employee> emply;
+
+
+        ThreadedProcess(Map<Integer, Employee> emply){
+            this.emply = emply;
+        }
+
+        @Override
+        public void run() {
+            //create new connection everytime
+            try{
+                PreparedStatement stmt = StatementFactory.getInsertStatement();
+                for (Employee e : emply.values()){
+                    stmt.setInt(1, e.getEmployeeID());
+                    stmt.setString(2, e.getToc());
+                    stmt.setString(3, e.getFirstName());
+                    stmt.setString(4, String.valueOf(e.getMiddleInitial()));
+                    stmt.setString(5, e.getLastName());
+                    stmt.setString(6, String.valueOf(e.getGender()));
+                    stmt.setString(7, e.getEmail());
+                    stmt.setObject(8, e.getDob());
+                    stmt.setObject(9, e.getDoJ());
+                    stmt.setInt(10, e.getSalary());
+                    stmt.addBatch();
+
+                }
+                stmt.executeLargeBatch();
+                //stmt.executeBatch();
+                stmt.close();
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+            try {
+
+                ConnectionFactory.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
     @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) {
+    public  boolean insertEmployee(Map<Integer, Employee> employee) {
+
+        int counterincrease = employee.size()/ 2;
+
+        ThreadedProcess obj = new ThreadedProcess(employee);
+        Thread tobj = new Thread(obj);
+            tobj.start();
+       // Thread tobj = new Thread(obj);
+       // tobj.start();
+
+        return false;
+    }
+*/
+
+/*
+    @Override
+    public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
+
+
+
+
+
+        return false;
+    }
+*/
+
+
+
+
+    class ThreadedProcs implements Runnable {
+
+        PreparedStatement stmt;
+        SortedMap<Integer, Employee> data;
+
+        public ThreadedProcs(PreparedStatement stmt,SortedMap<Integer, Employee> data) {
+            this.stmt = stmt;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                //PreparedStatement stmt2 = StatementFactory.getInsertStatement();
+                for (Employee e : data.values()) {
+                    stmt.setInt(1, e.getEmployeeID());
+                    stmt.setString(2, e.getToc());
+                    stmt.setString(3, e.getFirstName());
+                    stmt.setString(4, String.valueOf(e.getMiddleInitial()));
+                    stmt.setString(5, e.getLastName());
+                    stmt.setString(6, String.valueOf(e.getGender()));
+                    stmt.setString(7, e.getEmail());
+                    stmt.setObject(8, e.getDob());
+                    stmt.setObject(9, e.getDoJ());
+                    stmt.setInt(10, e.getSalary());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                stmt.close();
+                ConnectionFactory.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    @Override
+    public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
+
+        SortedMap<Integer, Employee> t1 = sorted.subMap(0, (int) (sorted.size()*0.25));
+        SortedMap<Integer, Employee> t2 = sorted.subMap((int) (sorted.size()*0.25)+1, (int) (sorted.size()*0.5 ));
+        SortedMap<Integer, Employee> t3 = sorted.subMap((int) (sorted.size()*0.5)+1, (int) (sorted.size()*0.75));
+        SortedMap<Integer, Employee> t4 = sorted.subMap((int) (sorted.size()*0.75)+1,  (sorted.size()-1));
+
+
+
+        Runnable work1 = new ThreadedProcs(StatementFactory.getInsertStatement(),t1);
+        Runnable work2 = new ThreadedProcs(StatementFactory.getInsertStatement(),t2);
+        Runnable work3 = new ThreadedProcs(StatementFactory.getInsertStatement(),t3);
+        Runnable work4 = new ThreadedProcs(StatementFactory.getInsertStatement(),t4);
+        executor.execute(work1);
+        executor.execute(work2);
+        executor.execute(work3);
+        executor.execute(work4);
+        //ConnectionFactory.closeConnection();
+
+
+        //stmt.close();
+        executor.shutdown();
+        while(!executor.isTerminated()){
+        }
+        ConnectionFactory.closeConnection();
+
+
+
+        return false;
+    }
+
+    /*
+
+     // This also works
+
+    class ThreadPro implements Runnable{
+        SortedMap<Integer, Employee> empy;
+
+        ThreadPro(  SortedMap<Integer, Employee> empy){
+           this.empy = empy;
+        }
+        @Override
+        public void run() {
+
+            try{
+                PreparedStatement stmt = StatementFactory.getInsertStatement();
+                for (Employee e : empy.values()) {
+                    stmt.setInt(1, e.getEmployeeID());
+                    stmt.setString(2, e.getToc());
+                    stmt.setString(3, e.getFirstName());
+                    stmt.setString(4, String.valueOf(e.getMiddleInitial()));
+                    stmt.setString(5, e.getLastName());
+                    stmt.setString(6, String.valueOf(e.getGender()));
+                    stmt.setString(7, e.getEmail());
+                    stmt.setObject(8, e.getDob());
+                    stmt.setObject(9, e.getDoJ());
+                    stmt.setInt(10, e.getSalary());
+                    //System.out.println(stmt);
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
+                stmt.close();
+
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public synchronized boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException {
+
+        TreeMap<Integer, Employee> sorted = new TreeMap<>(employee);
+
+        SortedMap<Integer, Employee> t1 = sorted.subMap(0, (int) (sorted.size()*0.25));
+        SortedMap<Integer, Employee> t2 = sorted.subMap((int) (sorted.size()*0.25), (int) (sorted.size()*0.5 ));
+        SortedMap<Integer, Employee> t3 = sorted.subMap((int) (sorted.size()*0.5 ), (int) (sorted.size()*0.75));
+        SortedMap<Integer, Employee> t4 = sorted.subMap((int) (sorted.size()*0.75 ),  (sorted.size()-1));
+
+
+        ThreadPro thd = new ThreadPro(t1);
+        Thread thread1 = new Thread(thd);
+        ConnectionFactory.closeConnection();
+        thread1.start();
+
+
+
+        ThreadPro thd2 = new ThreadPro(t2);
+        Thread thread2 = new Thread(thd2);
+        ConnectionFactory.closeConnection();
+        thread2.start();
+
+        ThreadPro thd3 = new ThreadPro(t3);
+        Thread thread3 = new Thread(thd3);
+        ConnectionFactory.closeConnection();
+        thread3.start();
+
+        ThreadPro thd4 = new ThreadPro(t4);
+        Thread thread4 = new Thread(thd4);
+        ConnectionFactory.closeConnection();
+        thread4.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+*/
+
+
+
+
+
+//This works
+  /*  @Override
+    public synchronized boolean insertEmployee(Map<Integer, Employee> employee) {
             try (PreparedStatement statement = StatementFactory.getInsertStatement()) {
-                int batchTotal=0;
                 for (Employee e : employee.values()) {
                     //they were all .setObject
                     statement.setInt(1, e.getEmployeeID());
@@ -61,9 +298,8 @@ public class EmployeeDaoImpl implements DAO{
             }
         System.out.println("Inserted");
         //ConnectionFactory.closeConnection();
-
         return false;
-    }
+    }*/
 
 
 
