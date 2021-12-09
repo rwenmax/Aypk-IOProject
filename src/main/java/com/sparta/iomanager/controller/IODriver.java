@@ -18,7 +18,7 @@ public class IODriver {
         InputManager inputManager = new InputManager();
         Map<Integer, Employee> employeeMap;
         start = System.nanoTime();
-        employeeMap = inputManager.insertion(inputManager.readFile(fileFinder.findFile()));
+        employeeMap = inputManager.insertion(inputManager.readStreamFile(fileFinder.findFile()));
         end = System.nanoTime();
         new EmployeeDaoImpl().dropTable();
         new EmployeeDaoImpl().createTable();
