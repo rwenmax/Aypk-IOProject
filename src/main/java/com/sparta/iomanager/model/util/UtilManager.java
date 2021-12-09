@@ -5,23 +5,19 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.sparta.iomanager.model.util.Logger.WARNING;
 
 public class UtilManager {
-    static List<String> titles = new ArrayList<>(List.of("Mr.", "Mrs.", "Miss.","Hon.", "Prof.", "Hons.", "Ms.", "Drs."));
-
     /**
      * returns true if the prefix is contained within the titles arraylist
      * @param prefix
      * @return
      */
     public static boolean prefixValidation(String prefix){
-        return titles.contains(prefix);
+        return Constants.TITLES.contains(prefix);
     }
 
     /**
@@ -30,9 +26,8 @@ public class UtilManager {
      * @return
      */
     public static boolean nameValidation(String name){
-        String validName = "(^[A-Za-z])((?![ .,'-]$)[a-z .,'-]){0,24}$"; //a string of 24 character is allowed and no number or special character
         if (name == null || name.isEmpty()) return false;
-        return name.matches(validName);
+        return name.matches(Constants.VALID_NAME);
     }
 
     /**
@@ -41,9 +36,8 @@ public class UtilManager {
      * @return
      */
     public static boolean initialsValidation(String initial){
-        String validInitials = "(^[A-Za-z])((?![ .,'-]$)[a-z .,'-]){0}$";
         if (initial == null || initial.isEmpty()) return false;
-        return initial.matches(validInitials);
+        return initial.matches(Constants.VALID_INITIAL);
     }
 
     /**
@@ -52,7 +46,7 @@ public class UtilManager {
      * @return
      */
     public static boolean genderValidation(String gender){
-        return (gender.equalsIgnoreCase("M") || gender.equalsIgnoreCase("F"));
+        return Constants.GENDER.contains(gender);
     }
 
     /**
@@ -61,16 +55,23 @@ public class UtilManager {
      * @return
      */
     public static boolean emailValidation(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-
-        Pattern pat = Pattern.compile(emailRegex);
+        Pattern pat = Pattern.compile(Constants.EMAIL_REGEX);
         if (email == null) {
             return false;
         }
         return pat.matcher(email).matches();
+    }
+
+    /**
+     * calculatePeriod Helper Method
+     * @param d
+     * @return
+     */
+    private static Period calculatePeriod(Date d){
+        LocalDate date = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+        Period period = Period.between(date, currentDate);
+        return period;
     }
 
     /**
@@ -79,11 +80,7 @@ public class UtilManager {
      * @return true/false
      */
     public static boolean dobValidation(Date dob){
-        LocalDate date = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(date, currentDate);
-        System.out.println(period.getYears());
-        return period.getYears() >= 18;
+        return calculatePeriod(dob).getYears() >= 18;
     }
 
     /**
@@ -92,10 +89,7 @@ public class UtilManager {
      * @return
      */
     public static boolean dojValidation(Date doj){
-        LocalDate date = doj.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(date, currentDate);
-        return period.getYears() < 0;
+        return calculatePeriod(doj).getYears() < 0;
     }
 
     /**
@@ -119,8 +113,7 @@ public class UtilManager {
      * @return
      */
     public static boolean checkCharacter(String character){
-        String charRegex = "[A-Za-z]+";
-        return character.matches(charRegex);
+        return character.matches(Constants.CHAR_REGEX);
     }
 
     /**
