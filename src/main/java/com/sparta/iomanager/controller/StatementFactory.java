@@ -71,15 +71,15 @@ public class StatementFactory {
 
 
 
-/*
+
     public static void closeStatement() throws SQLException {
         if (insertStatement != null) insertStatement.close();
         if (createStatement != null) createStatement.close();
         if (deleteStatement != null) deleteStatement.close();
         if (updateStatement !=null) updateStatement.close();
         if (dropStatement !=null) dropStatement.close();
+
     }
-*/
 
 
 

@@ -16,22 +16,30 @@ public class EmployeeDaoImpl implements DAO{
 
     @Override
     public boolean createTable() throws SQLException, IOException {
-        PreparedStatement statement = StatementFactory.getCreateStatement();
-        if (statement.executeUpdate() > 0) return true;
+        try(PreparedStatement statement = StatementFactory.getCreateStatement()){
+            statement.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        //ConnectionFactory.closeConnection();
         return false;
     }
 
     @Override
     public void dropTable() throws SQLException, IOException {
-        PreparedStatement statement = StatementFactory.getDropStatement();
-        statement.executeUpdate();
+        try(PreparedStatement statement = StatementFactory.getDropStatement()){
+            statement.executeUpdate();
+        }
+        //ConnectionFactory.closeConnection();
+        //StatementFactory.closeStatement();
+        //ConnectionFactory.closeConnection();
     }
 
 
     @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
-
+    public boolean insertEmployee(Map<Integer, Employee> employee) {
             try (PreparedStatement statement = StatementFactory.getInsertStatement()) {
+                int batchTotal=0;
                 for (Employee e : employee.values()) {
                     //they were all .setObject
                     statement.setInt(1, e.getEmployeeID());
@@ -44,14 +52,16 @@ public class EmployeeDaoImpl implements DAO{
                     statement.setObject(8, e.getDob());
                     statement.setObject(9, e.getDoJ());
                     statement.setInt(10, e.getSalary());
-                    System.out.println(statement);
+                    //System.out.println(statement);
                     statement.addBatch();
                 }
                 int[] recordsAdded = statement.executeBatch();
             } catch (SQLException | IOException e){
                 e.printStackTrace();
             }
-        ConnectionFactory.closeConnection();
+        System.out.println("Inserted");
+        //ConnectionFactory.closeConnection();
+
         return false;
     }
 
@@ -81,6 +91,7 @@ public class EmployeeDaoImpl implements DAO{
             }
             //emp2.put(emp.getEmployeeID(),emp);
         }
+        //ConnectionFactory.closeConnection();
         return emp2;
     }
 
@@ -88,10 +99,10 @@ public class EmployeeDaoImpl implements DAO{
     public HashMap<Integer, Employee> getEmployee(int employeeID) throws SQLException, IOException {
         Employee emp = new Employee();
         HashMap<Integer, Employee> emp2 = new HashMap<>();
-        try (PreparedStatement statement = StatementFactory.getEmployeeStatement()){
-            statement.setString(1, employeeID+"");
+        try (PreparedStatement statement = StatementFactory.getEmployeeStatement()) {
+            statement.setString(1, employeeID + "");
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 emp.setEmployeeID(resultSet.getInt("employeeID"));
                 emp.setToc(resultSet.getString("name_prefix"));
                 emp.setFirstName(resultSet.getString("first_name"));
@@ -103,8 +114,9 @@ public class EmployeeDaoImpl implements DAO{
                 emp.setDoJ(resultSet.getDate("date_of_joining"));
                 emp.setSalary(resultSet.getInt("salary"));
             }
-            emp2.put(emp.getEmployeeID(),emp);
+            emp2.put(emp.getEmployeeID(), emp);
         }
+        //ConnectionFactory.closeConnection();
       return emp2;
     }
 

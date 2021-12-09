@@ -177,7 +177,7 @@ public class InputManager{
                 if (UtilManager.checkInteger(fieldArray[i][SALARY])) employee.setSalary(Integer.parseInt(fieldArray[i][SALARY]));
 
                 if (UtilManager.initialsValidation(fieldArray[i][MIDDLE_INITIAL])) employee.setMiddleInitial(fieldArray[i][MIDDLE_INITIAL].charAt(0));
-                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setMiddleInitial(fieldArray[i][GENDER].charAt(0));
+                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setGender(fieldArray[i][GENDER].charAt(0));
 
                 if (UtilManager.prefixValidation(fieldArray[i][TOC])) employee.setToc(fieldArray[i][TOC]);
                 if (UtilManager.nameValidation(fieldArray[i][FIRST_NAME])) employee.setFirstName(fieldArray[i][FIRST_NAME]);
