@@ -8,6 +8,7 @@ import java.io.FileDescriptor;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,18 +108,19 @@ public class InputManager{
                 }
                 if (UtilManager.checkInteger(fieldArray[i][salary])) employee.setSalary(Integer.parseInt(fieldArray[i][salary]));
 
-                if (UtilManager.checkCharacter(fieldArray[i][middleInitial]))
-                    employee.setMiddleInitial(fieldArray[i][middleInitial].charAt(0));
-                if (UtilManager.checkCharacter(fieldArray[i][gender])) employee.setMiddleInitial(fieldArray[i][gender].charAt(0));
+                if (UtilManager.initialsValidation(fieldArray[i][middleInitial])) employee.setMiddleInitial(fieldArray[i][middleInitial].charAt(0));
+                if (UtilManager.genderValidation(fieldArray[i][gender])) employee.setMiddleInitial(fieldArray[i][gender].charAt(0));
 
-                employee.setToc(fieldArray[i][toc]);
-                employee.setFirstName(fieldArray[i][firstName]);
-                employee.setLastName(fieldArray[i][lastName]);
-                employee.setEmail(fieldArray[i][email]);
+                if (UtilManager.prefixValidation(fieldArray[i][toc])) employee.setToc(fieldArray[i][toc]);
+                if (UtilManager.nameValidation(fieldArray[i][firstName])) employee.setFirstName(fieldArray[i][firstName]);
+                if (UtilManager.nameValidation(fieldArray[i][lastName])) employee.setLastName(fieldArray[i][lastName]);
+                if (UtilManager.emailValidation(fieldArray[i][email])) employee.setEmail(fieldArray[i][email]);
 
                 try {
-                    employee.setDob(UtilManager.setDateFormat(fieldArray[i][dob]));
-                    employee.setDoJ(UtilManager.setDateFormat(fieldArray[i][doj]));
+                    Date date = UtilManager.setDateFormat(fieldArray[i][dob]);
+                    if (UtilManager.dobValidation(date)) employee.setDob(date);
+                    date = UtilManager.setDateFormat(fieldArray[i][doj]);
+                    if (UtilManager.dojValidation(date)) employee.setDoJ(date);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
