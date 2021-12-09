@@ -59,7 +59,7 @@ public class FileFinder {
             else if (!validInput) {
                 for (int i = 0; i < matchingFiles.length; i++) {
                     if (names.get(i).equals(userInput)) {
-                        if (userInput.contains(".csv")){
+                        if (userInput.contains(".csv") || userInput.contains(".ods")){
                             // is file
                             dir = new File(dir.toString() + stringSeperator + userInput);
                             foundFile = true;
