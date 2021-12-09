@@ -54,7 +54,7 @@ public class InputManager {
 
             if (UtilManager.checkCharacter(fields[i][middleInitial]))
                 employee.setMiddleInitial(fields[i][middleInitial].charAt(0));
-            if (UtilManager.checkCharacter(fields[i][gender])) employee.setMiddleInitial(fields[i][gender].charAt(0));
+            if (UtilManager.checkCharacter(fields[i][gender])) employee.setGender(fields[i][gender].charAt(0));
 
             employee.setToc(fields[i][toc]);
             employee.setFirstName(fields[i][firstName]);

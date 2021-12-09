@@ -18,14 +18,14 @@ public class ConnectionFactory {
     public static Connection getConnection() throws SQLException, IOException {
 
         /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
-
+        if (theConnection ==null) {
             Properties properties = new Properties();
             properties.load(new FileReader("connection.properties"));
             String url = properties.getProperty("dbUrl");
             String userId = properties.getProperty("dbUserName");
             String userPassword = properties.getProperty("dbUserPassword");
             theConnection = DriverManager.getConnection(url, userId, userPassword);
-
+        }
         return theConnection;
     }
 
