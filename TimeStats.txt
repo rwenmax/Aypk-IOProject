@@ -1,0 +1,11 @@
+Without Threading:
+Time taken to read file: 2109 ms
+
+The List Size of Employees: 9943
+The List Size of Duplicates: 57
+
+With Threading:
+Time taken to read file: 1327 ms
+
+The List Size of Employees: 9942
+The List Size of Duplicates: 58

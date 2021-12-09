@@ -9,7 +9,6 @@ import java.util.Map;
 public class OutputManager {
 
     //Printer
-
     public static void outPutResults(Map<Integer, Employee> employeeList){
         List<String> employees = new ArrayList();
         for( Employee emp: employeeList.values()){
@@ -28,15 +27,8 @@ public class OutputManager {
             employees.add(singleEmployee+"");
         }
 
-
         for (String eml : employees){
             System.out.println(eml);
         }
-
-
     }
-
-
-
-
 }
