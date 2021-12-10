@@ -47,11 +47,11 @@
 
 
 
-![screencast large csv file](src/main/resources/screencasts/screencast1.mov)
+![screencast large csv file](src/main/resources/screencasts/screencast1.gif)
 
 
 
-![screencast small csv file](src/main/resources/screencasts/screencast2.mov)
+![screencast small csv file](src/main/resources/screencasts/screencast2.gif)
 
 ---
 
