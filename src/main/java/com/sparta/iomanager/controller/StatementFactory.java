@@ -27,7 +27,7 @@ public class StatementFactory {
     public static PreparedStatement getInsertStatement() throws SQLException, IOException {
        // if (insertStatement == null){
              ConnectionFactory conn = new ConnectionFactory();
-            insertStatement = conn.getConnection2().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
+            insertStatement = conn.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
        // }
         return insertStatement;
     }

@@ -47,34 +47,31 @@ public class EmployeeDaoImpl implements DAO{
             this.stmt = stmt;
             this.data = data;
         }
-
         @Override
         public void run() {
 
             try {
-                //PreparedStatement stmt2 = StatementFactory.getInsertStatement();
+                PreparedStatement stmt2 = StatementFactory.getInsertStatement();
                 for (Employee e : data.values()) {
-                    stmt.setInt(1, e.getEmployeeID());
-                    stmt.setString(2, e.getToc());
-                    stmt.setString(3, e.getFirstName());
-                    stmt.setString(4, String.valueOf(e.getMiddleInitial()));
-                    stmt.setString(5, e.getLastName());
-                    stmt.setString(6, String.valueOf(e.getGender()));
-                    stmt.setString(7, e.getEmail());
-                    stmt.setObject(8, e.getDob());
-                    stmt.setObject(9, e.getDoJ());
-                    stmt.setInt(10, e.getSalary());
-                    stmt.addBatch();
+                    stmt2.setInt(1, e.getEmployeeID());
+                    stmt2.setString(2, e.getToc());
+                    stmt2.setString(3, e.getFirstName());
+                    stmt2.setString(4, String.valueOf(e.getMiddleInitial()));
+                    stmt2.setString(5, e.getLastName());
+                    stmt2.setString(6, String.valueOf(e.getGender()));
+                    stmt2.setString(7, e.getEmail());
+                    stmt2.setObject(8, e.getDob());
+                    stmt2.setObject(9, e.getDoJ());
+                    stmt2.setInt(10, e.getSalary());
+                    stmt2.addBatch();
                 }
-                stmt.executeBatch();
-                stmt.close();
+                stmt2.executeBatch();
+                stmt2.close();
                 ConnectionFactory.closeConnection();
             } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     @Override
@@ -86,8 +83,6 @@ public class EmployeeDaoImpl implements DAO{
         int f2 = (int) (sorted.size()*0.5);
         int f3 = (int)(sorted.size()*0.75);
         int f4 =  (sorted.size());
-
-        System.out.println(f1 +" " + f2 +" " +f3+" "+f4 );
 
         SortedMap<Integer, Employee> t1 = sorted.subMap(0, f1);
         SortedMap<Integer, Employee> t2 = sorted.subMap(f1, f2);
@@ -112,15 +107,12 @@ public class EmployeeDaoImpl implements DAO{
         while(!executor.isTerminated()){
         }
         ConnectionFactory.closeConnection();
-
-
-
         return false;
     }
 
     /*
 
-     // This also works
+     // This also works with tradtitional thread
 
     class ThreadPro implements Runnable{
         SortedMap<Integer, Employee> empy;
