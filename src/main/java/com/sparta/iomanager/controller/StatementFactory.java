@@ -15,16 +15,16 @@ public class StatementFactory {
     private static ConnectionFactory conn = new ConnectionFactory();
 
 
-    public static PreparedStatement getDropStatement() throws SQLException, IOException {
+    public PreparedStatement getDropStatement() throws SQLException, IOException {
         if (dropStatement == null){
             dropStatement = conn.getConnection().prepareStatement("DROP TABLE IF EXISTS Employee");
-        }
 
+        }
         return dropStatement;
     }
 
 
-    public static PreparedStatement getInsertStatement() throws SQLException, IOException {
+    public  PreparedStatement getInsertStatement() throws SQLException, IOException {
        // if (insertStatement == null){
              ConnectionFactory conn = new ConnectionFactory();
             insertStatement = conn.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
@@ -32,7 +32,7 @@ public class StatementFactory {
         return insertStatement;
     }
 
-    public static PreparedStatement getAllEmployee() throws SQLException, IOException{
+    public PreparedStatement getAllEmployee() throws SQLException, IOException{
         if (selectAllEmployeeStatement == null){
             selectAllEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM Employee");
         }
@@ -43,7 +43,7 @@ public class StatementFactory {
 
 
 
-    public static PreparedStatement getCreateStatement() throws SQLException, IOException{
+    public  PreparedStatement getCreateStatement() throws SQLException, IOException{
         if (createStatement == null){
             createStatement = conn.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "Employee ("
                     + "employeeID INT PRIMARY KEY NOT NULL,"
@@ -61,7 +61,7 @@ public class StatementFactory {
         return createStatement;
     }
 
-    public static PreparedStatement getEmployeeStatement() throws SQLException, IOException {
+    public  PreparedStatement getEmployeeStatement() throws SQLException, IOException {
         if (selectEmployeeStatement == null)
         {
             selectEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ?");
