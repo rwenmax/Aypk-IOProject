@@ -11,9 +11,9 @@ import java.util.Properties;
 public class ConnectionFactory {
 
 
-    private Connection theConnection  = null;
+    private static Connection theConnection  = null;
 
-    public Connection getConnection() throws SQLException, IOException {
+    public static Connection getConnection() throws SQLException, IOException {
         /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
         if (theConnection==null || theConnection.isClosed()) {
             Properties properties = new Properties();
@@ -21,8 +21,8 @@ public class ConnectionFactory {
             String url = properties.getProperty("dbUrl");
             String userId = properties.getProperty("dbUserName");
             String userPassword = properties.getProperty("dbUserPassword");
-            theConnection = DriverManager.getConnection(url, userId, userPassword);
-            //theConnection = DriverManager.getConnection(url +"?&rewriteBatchedStatements=true", userId, userPassword);
+            //theConnection = DriverManager.getConnection(url, userId, userPassword);
+            theConnection = DriverManager.getConnection(url +"?rewriteBatchedStatements=true", userId, userPassword);
         }
         return theConnection;
     }
