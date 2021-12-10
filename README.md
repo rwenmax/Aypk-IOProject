@@ -7,19 +7,19 @@
 <details>
   <summary>Menu</summary>
   <h5>
-    <a href="#project requirements">Project requirements</a> •
+    <a href="#Project requirements">Project requirements</a> •
   </h5>
   <h5>
-    <a href="#checklist">Checklist requirements implemented</a> •
+    <a href="#Checklist">Checklist requirements implemented</a> •
   </h5>
   <h5>
-  	<a href="#screencast">Screencast of the app running</a> •  
+  	<a href="#Screencast">Screencast of the app running</a> •  
   </h5>
 	<h5>
-  	<a href="#credits and contact">Credits</a> •  
+  	<a href="#Credits and contact">Credits</a> •  
   </h5>
   <h5>
-  	<a href="#license">License</a>   
+  	<a href="#License">License</a>   
   </h5>
 </details>
 
