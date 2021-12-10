@@ -10,22 +10,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IODriver {
+    static long startRead;
+    static long endRead;
+    static long startSQL;
+    static long endSQL;
     public static void main(String[] args) throws SQLException, IOException {
-        FileFinder fileFinder = new FileFinder();
-
         InputManager inputManager = new InputManager();
         Map<Integer, Employee> employeeMap;
-        long startRead = System.nanoTime();
-        employeeMap = inputManager.insertion(inputManager.readStreamFile(fileFinder.findFile()));
-        long endRead = System.nanoTime();
-        long startSQL = System.nanoTime();
-        new EmployeeDaoImpl().dropTable();
-        new EmployeeDaoImpl().createTable();
-        new EmployeeDaoImpl().insertEmployee(employeeMap);
-        long endSQL = System.nanoTime();
+
+        employeeMap = read(inputManager);
+        write(employeeMap);
+
         //OutputManager.outPutResults(employeeMap);
         //OutputManager.outPutResults(new EmployeeDaoImpl().getEmployee());
 
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
+    }
+
+    // Runs the UI that allows the user to find the file they want read
+    // Then reads in the file and creates a map of employees from it
+    // With the Employee ID as the key
+    private static Map<Integer, Employee> read(InputManager inputManager){
+        FileFinder fileFinder = new FileFinder();
+        startRead = System.nanoTime();
+        Map<Integer, Employee> map = inputManager.insertion(inputManager.readStreamFile(fileFinder.findFile()));
+        endRead = System.nanoTime();
+        return map;
+    }
+
+    // Takes the map and inserts the data into a SQL Database by creating the table
+    // Then inserting all the objects
+    private static void write(Map<Integer, Employee> employeeMap) throws SQLException, IOException{
+        startSQL = System.nanoTime();
+        new EmployeeDaoImpl().dropTable();
+        new EmployeeDaoImpl().createTable();
+        new EmployeeDaoImpl().insertEmployee(employeeMap);
+        endSQL = System.nanoTime();
     }
 }
