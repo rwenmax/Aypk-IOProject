@@ -25,6 +25,9 @@ public class IODriver {
         //OutputManager.outPutResults(employeeMap);
         //OutputManager.outPutResults(new EmployeeDaoImpl().getEmployee());
 
+
+        //delete a record based on the id
+        //new EmployeeDaoImpl().deleteEmployee(4);
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
 
