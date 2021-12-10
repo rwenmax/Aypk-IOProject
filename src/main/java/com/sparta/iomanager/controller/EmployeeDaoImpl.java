@@ -17,6 +17,35 @@ public class EmployeeDaoImpl implements DAO{
     /*establish connection first */
 
     @Override
+    public void dropDatabase() throws SQLException, IOException {
+
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement statement = getStmt.getDatabaseDropStatement()){
+            statement.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        ConnectionFactory.closeConnection();
+    }
+
+
+    @Override
+    public void createDatabase() throws SQLException, IOException {
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement statement = getStmt.getDatabaseStatement()){
+            statement.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        ConnectionFactory.closeConnection();
+    }
+
+
+
+
+
+
+    @Override
     public boolean createTable() throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getCreateStatement()){
@@ -64,9 +93,14 @@ public class EmployeeDaoImpl implements DAO{
                 }
                 stmt2.executeBatch();
                 stmt2.close();
-                ConnectionFactory.closeConnection();
             } catch (SQLException | IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    ConnectionFactory.closeConnection();
+                } catch (SQLException | IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -278,6 +312,7 @@ public class EmployeeDaoImpl implements DAO{
       return emp2;
     }
 
+    
     @Override
     public int updateEmployee(Employee employee) {
         return 0;
