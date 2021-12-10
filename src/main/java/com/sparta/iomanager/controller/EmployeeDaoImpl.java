@@ -37,80 +37,6 @@ public class EmployeeDaoImpl implements DAO{
     }
 
 
-/*
-
-    class ThreadedProcess implements Runnable{
-        private Map<Integer, Employee> emply;
-
-
-        ThreadedProcess(Map<Integer, Employee> emply){
-            this.emply = emply;
-        }
-
-        @Override
-        public void run() {
-            //create new connection everytime
-            try{
-                PreparedStatement stmt = StatementFactory.getInsertStatement();
-                for (Employee e : emply.values()){
-                    stmt.setInt(1, e.getEmployeeID());
-                    stmt.setString(2, e.getToc());
-                    stmt.setString(3, e.getFirstName());
-                    stmt.setString(4, String.valueOf(e.getMiddleInitial()));
-                    stmt.setString(5, e.getLastName());
-                    stmt.setString(6, String.valueOf(e.getGender()));
-                    stmt.setString(7, e.getEmail());
-                    stmt.setObject(8, e.getDob());
-                    stmt.setObject(9, e.getDoJ());
-                    stmt.setInt(10, e.getSalary());
-                    stmt.addBatch();
-
-                }
-                stmt.executeLargeBatch();
-                //stmt.executeBatch();
-                stmt.close();
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-            }
-            try {
-
-                ConnectionFactory.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    @Override
-    public  boolean insertEmployee(Map<Integer, Employee> employee) {
-
-        int counterincrease = employee.size()/ 2;
-
-        ThreadedProcess obj = new ThreadedProcess(employee);
-        Thread tobj = new Thread(obj);
-            tobj.start();
-       // Thread tobj = new Thread(obj);
-       // tobj.start();
-
-        return false;
-    }
-*/
-
-/*
-    @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
-
-
-
-
-
-        return false;
-    }
-*/
-
-
-
 
     class ThreadedProcs implements Runnable {
 
@@ -143,7 +69,7 @@ public class EmployeeDaoImpl implements DAO{
                 stmt.executeBatch();
                 stmt.close();
                 ConnectionFactory.closeConnection();
-            } catch (SQLException e) {
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -153,13 +79,20 @@ public class EmployeeDaoImpl implements DAO{
 
     @Override
     public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newFixedThreadPool(20);
         SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
 
-        SortedMap<Integer, Employee> t1 = sorted.subMap(0, (int) (sorted.size()*0.25));
-        SortedMap<Integer, Employee> t2 = sorted.subMap((int) (sorted.size()*0.25)+1, (int) (sorted.size()*0.5 ));
-        SortedMap<Integer, Employee> t3 = sorted.subMap((int) (sorted.size()*0.5)+1, (int) (sorted.size()*0.75));
-        SortedMap<Integer, Employee> t4 = sorted.subMap((int) (sorted.size()*0.75)+1,  (sorted.size()-1));
+        int f1 = (int) (sorted.size()*0.25);
+        int f2 = (int) (sorted.size()*0.5);
+        int f3 = (int)(sorted.size()*0.75);
+        int f4 =  (sorted.size());
+
+        System.out.println(f1 +" " + f2 +" " +f3+" "+f4 );
+
+        SortedMap<Integer, Employee> t1 = sorted.subMap(0, f1);
+        SortedMap<Integer, Employee> t2 = sorted.subMap(f1, f2);
+        SortedMap<Integer, Employee> t3 = sorted.subMap(f2, f3);
+        SortedMap<Integer, Employee> t4 = sorted.subMap(f3,  (sorted.size())+1);
 
 
 

@@ -11,9 +11,9 @@ import java.util.Properties;
 public class ConnectionFactory {
 
 
-    private static Connection theConnection  = null;
+    private Connection theConnection  = null;
 
-    public static Connection getConnection() throws SQLException, IOException {
+    public Connection getConnection() throws SQLException, IOException {
         /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
         if (theConnection==null || theConnection.isClosed()) {
             Properties properties = new Properties();
@@ -55,8 +55,9 @@ public class ConnectionFactory {
 
 
 
-    public static void closeConnection() throws SQLException {
-        if (theConnection !=null) theConnection.close();
+   public static void closeConnection() throws SQLException, IOException {
+        ConnectionFactory theConnection = new ConnectionFactory();
+        if (theConnection.getConnection() !=null) theConnection.getConnection().close();
     }
 
 }
