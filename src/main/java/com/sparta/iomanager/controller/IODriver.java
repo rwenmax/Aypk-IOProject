@@ -23,7 +23,8 @@ public class IODriver {
         new EmployeeDaoImpl().createTable();
         new EmployeeDaoImpl().insertEmployee(employeeMap);
         long endSQL = System.nanoTime();
-        OutputManager.outPutResults(employeeMap);
+        //OutputManager.outPutResults(employeeMap);
+        //OutputManager.outPutResults(new EmployeeDaoImpl().getEmployee());
 
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
