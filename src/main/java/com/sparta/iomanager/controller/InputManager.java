@@ -1,6 +1,7 @@
 package com.sparta.iomanager.controller;
 
 import com.sparta.iomanager.model.Employee;
+import com.sparta.iomanager.model.util.Constants;
 import com.sparta.iomanager.model.util.UtilManager;
 
 import java.io.BufferedReader;
@@ -76,8 +77,6 @@ public class InputManager{
             threadsFinished++;
         }
     }
-    final int ID = 0, TOC = 1, FIRST_NAME = 2, MIDDLE_INITIAL = 3, LAST_NAME = 4, GENDER = 5,
-            EMAIL = 6, DOB = 7, DOJ = 8, SALARY = 9;
     private Map<Integer, Employee> employeeHashMap = new HashMap<>();
     private Map<Integer, Employee> duplicateValues = new HashMap<>();
 
@@ -170,24 +169,24 @@ public class InputManager{
             for (int i = start; i < end; i++){
                 Employee employee = new Employee();
                 int id = 0;
-                if (UtilManager.checkInteger(fieldArray[i][ID])) {
-                    id = Integer.parseInt(fieldArray[i][ID]);
+                if (UtilManager.checkInteger(fieldArray[i][Constants.ID])) {
+                    id = Integer.parseInt(fieldArray[i][Constants.ID]);
                     employee.setEmployeeID(id);
                 }
-                if (UtilManager.checkInteger(fieldArray[i][SALARY])) employee.setSalary(Integer.parseInt(fieldArray[i][SALARY]));
+                if (UtilManager.checkInteger(fieldArray[i][Constants.SALARY])) employee.setSalary(Integer.parseInt(fieldArray[i][Constants.SALARY]));
 
-                if (UtilManager.initialsValidation(fieldArray[i][MIDDLE_INITIAL])) employee.setMiddleInitial(fieldArray[i][MIDDLE_INITIAL].charAt(0));
-                if (UtilManager.genderValidation(fieldArray[i][GENDER])) employee.setGender(fieldArray[i][GENDER].charAt(0));
+                if (UtilManager.initialsValidation(fieldArray[i][Constants.MIDDLE_INITIAL])) employee.setMiddleInitial(fieldArray[i][Constants.MIDDLE_INITIAL].charAt(0));
+                if (UtilManager.genderValidation(fieldArray[i][Constants.GENDER])) employee.setGender(fieldArray[i][Constants.GENDER].charAt(0));
 
-                if (UtilManager.prefixValidation(fieldArray[i][TOC])) employee.setToc(fieldArray[i][TOC]);
-                if (UtilManager.nameValidation(fieldArray[i][FIRST_NAME])) employee.setFirstName(fieldArray[i][FIRST_NAME]);
-                if (UtilManager.nameValidation(fieldArray[i][LAST_NAME])) employee.setLastName(fieldArray[i][LAST_NAME]);
-                if (UtilManager.emailValidation(fieldArray[i][EMAIL])) employee.setEmail(fieldArray[i][EMAIL]);
+                if (UtilManager.prefixValidation(fieldArray[i][Constants.TOC])) employee.setToc(fieldArray[i][Constants.TOC]);
+                if (UtilManager.nameValidation(fieldArray[i][Constants.FIRST_NAME])) employee.setFirstName(fieldArray[i][Constants.FIRST_NAME]);
+                if (UtilManager.nameValidation(fieldArray[i][Constants.LAST_NAME])) employee.setLastName(fieldArray[i][Constants.LAST_NAME]);
+                if (UtilManager.emailValidation(fieldArray[i][Constants.EMAIL])) employee.setEmail(fieldArray[i][Constants.EMAIL]);
 
                 try {
-                    Date date = UtilManager.setDateFormat(fieldArray[i][DOB]);
+                    Date date = UtilManager.setDateFormat(fieldArray[i][Constants.DOB]);
                     if (UtilManager.dobValidation(date)) employee.setDob(date);
-                    date = UtilManager.setDateFormat(fieldArray[i][DOJ]);
+                    date = UtilManager.setDateFormat(fieldArray[i][Constants.DOJ]);
                     if (UtilManager.dojValidation(date)) employee.setDoJ(date);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
