@@ -4,47 +4,66 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class StatementFactory {
-    private static PreparedStatement createStatement = null;
-    private static PreparedStatement insertStatement = null;
-    private static PreparedStatement selectEmployeeStatement = null;
-    private static PreparedStatement deleteStatement = null;
-    private static PreparedStatement updateStatement = null;
-    private static PreparedStatement dropStatement = null;
-    private static PreparedStatement selectAllEmployeeStatement = null;
-    private static ConnectionFactory conn = new ConnectionFactory();
+public class StatementFactory implements StatementFactoryInterface {
+    private  PreparedStatement createStatement = null;
+    private  PreparedStatement insertStatement = null;
+    private  PreparedStatement selectEmployeeStatement = null;
+    private  PreparedStatement deleteStatement = null;
+    private  PreparedStatement updateStatement = null;
+    private  PreparedStatement dropStatement = null;
+    private  PreparedStatement selectAllEmployeeStatement = null;
+    private  PreparedStatement databaseDropStatement = null;
+    private  PreparedStatement databaseStatement = null;
+    private  ConnectionFactory conn = new ConnectionFactory();
+    private  static String databaseName = "Employees";
 
 
-    public PreparedStatement getDropStatement() throws SQLException, IOException {
+    public PreparedStatement getDatabaseDropStatement() throws SQLException, IOException {
+        if (databaseDropStatement == null){
+            databaseDropStatement = conn.getConnection().prepareStatement("DROP DATABASE IF EXISTS " + databaseName);
+        }
+        return databaseDropStatement;
+    }
+
+    public  PreparedStatement getDatabaseStatement() throws SQLException, IOException {
+        if (databaseStatement == null){
+            databaseStatement = conn.getConnection().prepareStatement("CREATE DATABASE IF NOT EXISTS  " + databaseName);
+        }
+        return databaseStatement;
+    }
+
+
+    public  PreparedStatement getDropStatement() throws SQLException, IOException {
+        conn.setDatabaseName(databaseName);
         if (dropStatement == null){
             dropStatement = conn.getConnection().prepareStatement("DROP TABLE IF EXISTS Employee");
-
         }
         return dropStatement;
     }
 
 
     public  PreparedStatement getInsertStatement() throws SQLException, IOException {
-       // if (insertStatement == null){
-             ConnectionFactory conn = new ConnectionFactory();
-            insertStatement = conn.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
-       // }
+        // if (insertStatement == null){
+        ConnectionFactory conn = new ConnectionFactory();
+        conn.setDatabaseName(databaseName);
+        insertStatement = conn.getConnection().
+                prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
+        // }
         return insertStatement;
     }
 
-    public PreparedStatement getAllEmployee() throws SQLException, IOException{
+    public  PreparedStatement getAllEmployee() throws SQLException, IOException{
         if (selectAllEmployeeStatement == null){
+            conn.setDatabaseName(databaseName);
             selectAllEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM Employee");
         }
         return selectAllEmployeeStatement;
     }
 
 
-
-
-
     public  PreparedStatement getCreateStatement() throws SQLException, IOException{
         if (createStatement == null){
+            conn.setDatabaseName(databaseName);
             createStatement = conn.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "Employee ("
                     + "employeeID INT PRIMARY KEY NOT NULL,"
                     + "name_prefix VARCHAR(5),"
@@ -61,28 +80,13 @@ public class StatementFactory {
         return createStatement;
     }
 
+    /** MySQL specific prepared statement**/
     public  PreparedStatement getEmployeeStatement() throws SQLException, IOException {
         if (selectEmployeeStatement == null)
         {
+            conn.setDatabaseName(databaseName);
             selectEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ?");
         }
         return selectEmployeeStatement;
     }
-
-
-
-
-
-
-    public static void closeStatement() throws SQLException {
-        if (insertStatement != null) insertStatement.close();
-        if (createStatement != null) createStatement.close();
-        if (deleteStatement != null) deleteStatement.close();
-        if (updateStatement !=null) updateStatement.close();
-        if (dropStatement !=null) dropStatement.close();
-
-    }
-
-
-
 }
