@@ -1,29 +1,77 @@
-# Aypk-IOProject
 
-## Tests
-- `Try to find file, check if exists`
-- `Reading the first character from file`
-- `Read the first full entry, which is the 6 digit Employee ID`
-- `Read the full line`
-- `Read the full line and format it with regex into separate variables`
-- `Validate that there are 10 elements`
-- `Check for correct formatting (Id, TOC, Names, Gender, Email, DoB, DoH, Salary)`
-- `Create object from Employee class and assign values, check if values are correct`
 
-## Structure
-`Model`
-- `Interface Person`
-- `Class Employee Implements Person`
+<h1 align="center"><img src="src/main/resources/images/cover.png" alt="logo" align="center"><br></br><span style="color:purple">IO/DB Project</span> <span style="color:red">@</span><span style="color:blue"> Sparta</span></h1>
 
-`Utils`
-- `UtilManager`
-- `Reports`
 
-`View`
-- `UserInterface`
-- `Report`
 
-`Controller`
-- `IODriver`
-- `InputManager`
-- `OutputManager`
+<p align="center">
+  <a href="#project">Project</a> •
+  <a href="#checklist">Checklist</a> •
+  <a href="#screencast">Screencast</a> •
+  <a href="#credits">Credits and contact</a> •
+  <a href="#license">License</a> • 
+</p>
+
+
+
+
+---
+
+### Project
+
+>Create a project that reads in a CSV file (of different sizes) and add the values inside a database that you create.
+>
+>Keep in mind when coding of SOLID principles, design patterns, Java standard practices, git conflicts when merging, JDBC configuration and TDD. 
+>
+>Implement multi-threading and time the difference between single vs multi-threaded approach. While coding make use of Java streams and implement functional programming along side OOP. 
+>
+>Make sure the JDBC configuration file is not saved in git.
+
+----
+
+### Checklist
+
+- [x] SOLID principles
+- [x] DAO design patterns
+- [x] Java standard practices
+- [x] Use of git and sorting merging conflicts
+- [x] Use of JDBC
+- [x] TDD approach
+- [x] Multi-threading implementation
+- [x] Use of Java Streams and functional programming
+- [x] Compare single vs multi thread approach
+
+----
+
+### Screencast
+
+
+
+TO FILL IN
+
+---
+
+### Credits
+
+[Kamil](https://github.com/rwenmax)	[Pruthvi](https://github.com/pruthvi-lalji) 	[Yefri](https://github.com/grimz5129) 	[Alex](https://github.com/alexsusanu)
+
+----
+
+
+
+### License
+
+**Free** *'cause why not*
+
+
+
+
+
+
+
+
+
+
+
+
+
