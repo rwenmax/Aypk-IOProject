@@ -10,6 +10,10 @@ public class FileFinder {
     private String filePath;
     private String regexSeperator, stringSeperator;
 
+    /**
+     * runs the ui to find a file
+     * @return
+     */
     public String findFile(){
         File dir = new File(System.getProperty("user.dir"));
         stringSeperator = File.separator;
@@ -22,7 +26,11 @@ public class FileFinder {
         return filePath;
     }
 
-    //Search the folder/i,e list all the files with their names...
+    /**
+     * Search the folder/i,e list all the files with their names...
+     * @param path
+     * @return
+     */
     public String getDirectory(String path){
         Scanner scanner = new Scanner(System.in);
         File dir = new File(path);
@@ -41,8 +49,10 @@ public class FileFinder {
                 names.add(tnames[tnames.length-1]);
                 System.out.println(tnames[tnames.length-1].toString());
             }
-            // Get input
-            // Check input
+            /**
+             * Get input
+             * Check input
+             */
             String userInput = scanner.nextLine();
             if (userInput == null || userInput.isEmpty()){
                 System.out.println("Please enter a response!");
@@ -85,6 +95,11 @@ public class FileFinder {
         return dir.toString();
     }
 
+    /**
+     * traverse to the previous directory
+     * @param file
+     * @return
+     */
     private String goBack(File file){
         if (file.toString().equals(rootFolder)){
             System.err.println("Cannot go back!");

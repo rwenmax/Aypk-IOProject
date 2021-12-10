@@ -27,9 +27,13 @@ public class IODriver {
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
 
-    // Runs the UI that allows the user to find the file they want read
-    // Then reads in the file and creates a map of employees from it
-    // With the Employee ID as the key
+    /**
+     * Runs the UI that allows the user to find the file they want read
+     * Then reads in the file and creates a map of employees from it
+     * With the Employee ID as the key
+     * @param inputManager
+     * @return
+     */
     private static Map<Integer, Employee> read(InputManager inputManager){
         FileFinder fileFinder = new FileFinder();
         startRead = System.nanoTime();
@@ -38,8 +42,13 @@ public class IODriver {
         return map;
     }
 
-    // Takes the map and inserts the data into a SQL Database by creating the table
-    // Then inserting all the objects
+    /**
+     * Takes the map and inserts the data into a SQL Database by creating the table
+     * Then inserting all the objects
+     * @param employeeMap
+     * @throws SQLException
+     * @throws IOException
+     */
     private static void write(Map<Integer, Employee> employeeMap) throws SQLException, IOException{
         startSQL = System.nanoTime();
         new EmployeeDaoImpl().dropTable();
