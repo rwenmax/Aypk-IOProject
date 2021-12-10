@@ -13,15 +13,16 @@
     <a href="#checklist">Checklist requirements implemented</a> •
   </h5>
   <h5>
-  	<a href="#screencasts">Screencasts of the app running</a> •  
+  	<a href="#screencast">Screencasts of the app running</a> •  
   </h5>
 	<h5>
-  	<a href="#credits">Credits</a> •  
+  	<a href="#credits and contact">Credits</a> •  
   </h5>
   <h5>
   	<a href="#license">License</a>   
   </h5>
 </details>
+
 
 
 
