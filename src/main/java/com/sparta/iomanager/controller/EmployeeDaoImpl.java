@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
@@ -19,39 +18,37 @@ public class EmployeeDaoImpl implements DAO{
 
     @Override
     public boolean createTable() throws SQLException, IOException {
-        try(PreparedStatement statement = StatementFactory.getCreateStatement()){
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement statement = getStmt.getCreateStatement()){
             statement.executeUpdate();
         } catch (SQLException e){
             e.printStackTrace();
         }
-        //ConnectionFactory.closeConnection();
+        ConnectionFactory.closeConnection();
         return false;
     }
 
     @Override
     public void dropTable() throws SQLException, IOException {
-        try(PreparedStatement statement = StatementFactory.getDropStatement()){
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement statement = getStmt.getDropStatement()){
             statement.executeUpdate();
         }
         ConnectionFactory.closeConnection();
     }
 
 
-
-    class ThreadedProcs implements Runnable {
-
-        PreparedStatement stmt;
+    class ThreadProcess implements Runnable {
         SortedMap<Integer, Employee> data;
 
-        public ThreadedProcs(PreparedStatement stmt,SortedMap<Integer, Employee> data) {
-            this.stmt = stmt;
+        public ThreadProcess(SortedMap<Integer, Employee> data) {
             this.data = data;
         }
         @Override
         public void run() {
-
             try {
-                PreparedStatement stmt2 = StatementFactory.getInsertStatement();
+                StatementFactory stmt22 = new StatementFactory();
+                PreparedStatement stmt2 = stmt22.getInsertStatement();
                 for (Employee e : data.values()) {
                     stmt2.setInt(1, e.getEmployeeID());
                     stmt2.setString(2, e.getToc());
@@ -91,15 +88,14 @@ public class EmployeeDaoImpl implements DAO{
 
 
 
-        Runnable work1 = new ThreadedProcs(StatementFactory.getInsertStatement(),t1);
-        Runnable work2 = new ThreadedProcs(StatementFactory.getInsertStatement(),t2);
-        Runnable work3 = new ThreadedProcs(StatementFactory.getInsertStatement(),t3);
-        Runnable work4 = new ThreadedProcs(StatementFactory.getInsertStatement(),t4);
+        Runnable work1 = new ThreadProcess(t1);
+        Runnable work2 = new ThreadProcess(t2);
+        Runnable work3 = new ThreadProcess(t3);
+        Runnable work4 = new ThreadProcess(t4);
         executor.execute(work1);
         executor.execute(work2);
         executor.execute(work3);
         executor.execute(work4);
-        //ConnectionFactory.closeConnection();
 
 
         //stmt.close();
@@ -232,9 +228,9 @@ public class EmployeeDaoImpl implements DAO{
 
     @Override
     public HashMap<Integer, Employee> getEmployee() throws SQLException, IOException {
-
+        StatementFactory getStmt = new StatementFactory();
         HashMap<Integer, Employee> emp2 = new HashMap<>();
-        try (PreparedStatement statement = StatementFactory.getAllEmployee()){
+        try (PreparedStatement statement = getStmt.getAllEmployee()){
             ResultSet rS = statement.executeQuery();
             while (rS.next()){
                 Employee emp = new Employee();
@@ -252,15 +248,16 @@ public class EmployeeDaoImpl implements DAO{
             }
             //emp2.put(emp.getEmployeeID(),emp);
         }
-        //ConnectionFactory.closeConnection();
+        ConnectionFactory.closeConnection();
         return emp2;
     }
 
     @Override
     public HashMap<Integer, Employee> getEmployee(int employeeID) throws SQLException, IOException {
+        StatementFactory getStmt = new StatementFactory();
         Employee emp = new Employee();
         HashMap<Integer, Employee> emp2 = new HashMap<>();
-        try (PreparedStatement statement = StatementFactory.getEmployeeStatement()) {
+        try (PreparedStatement statement = getStmt.getEmployeeStatement()) {
             statement.setString(1, employeeID + "");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -277,7 +274,7 @@ public class EmployeeDaoImpl implements DAO{
             }
             emp2.put(emp.getEmployeeID(), emp);
         }
-        //ConnectionFactory.closeConnection();
+        ConnectionFactory.closeConnection();
       return emp2;
     }
 
