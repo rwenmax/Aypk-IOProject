@@ -1,15 +1,13 @@
+/** Creates the connection with the database provided the connection.properties file **/
 package com.sparta.iomanager.model;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
-
 public class ConnectionFactory {
 
     private static String databaseName ="";
     private  Connection theConnection  = null;
-
 
 
     public void setDatabaseName(String databaseName) {

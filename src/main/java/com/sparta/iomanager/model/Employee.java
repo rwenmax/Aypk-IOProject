@@ -1,3 +1,4 @@
+/** Concrete class for the Employees extends Person*/
 package com.sparta.iomanager.model;
 
 import java.util.Date;

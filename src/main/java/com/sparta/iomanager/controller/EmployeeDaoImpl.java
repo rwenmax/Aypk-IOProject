@@ -1,4 +1,9 @@
-package com.sparta.iomanager.model;
+package com.sparta.iomanager.controller;
+import com.sparta.iomanager.model.ConnectionFactory;
+import com.sparta.iomanager.model.DAO;
+import com.sparta.iomanager.model.Employee;
+import com.sparta.iomanager.model.StatementFactory;
+import com.sparta.iomanager.model.util.Logger;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -16,53 +21,75 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Drops the database*/
     @Override
-    public void dropDatabase() throws SQLException, IOException {
+    public void dropDatabase() {
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getDatabaseDropStatement()){
             statement.executeUpdate();
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        }  finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
     }
 
     /** Creates the database*/
     @Override
-    public void createDatabase() throws SQLException, IOException {
+    public void createDatabase() {
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getDatabaseStatement()){
             statement.executeUpdate();
-        } catch (SQLException e){
-            e.printStackTrace();
+        }catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        }  finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
     }
 
 
     /** Creates the table*/
     @Override
-    public boolean createTable() throws SQLException, IOException {
+    public boolean createTable() {
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getCreateStatement()){
             statement.executeUpdate();
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        }  finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
         return false;
     }
 
     /**Dropping the table*/
     @Override
-    public void dropTable() throws SQLException, IOException {
+    public void dropTable() {
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getDropStatement()){
             statement.executeUpdate();
+        } catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        }  finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
     }
 
-/** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
+    /** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
     class ThreadProcess implements Runnable {
         SortedMap<Integer, Employee> data;
 
@@ -90,12 +117,12 @@ public class EmployeeDaoImpl implements DAO {
                 stmt2.executeBatch();
                 stmt2.close();
             } catch (SQLException | IOException e) {
-                e.printStackTrace();
+                Logger.logger.error(e.toString());
             } finally {
                 try {
                     ConnectionFactory.closeConnection();
                 } catch (SQLException | IOException e) {
-                    e.printStackTrace();
+                    Logger.logger.error(e.toString());
                 }
             }
         }
@@ -103,22 +130,20 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Multi-threaded insertion */
     @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
-        ExecutorService executor = Executors.newFixedThreadPool(20);
+    public boolean insertEmployee(Map<Integer, Employee> employee) {
+        /* Convert HashMap into SortedMap inorder to split the dataset into 4 parts for multi-threading to occur */
+        ExecutorService executor = Executors.newFixedThreadPool(10); //Create thread pool of 10 threads, can be configured!
         SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
-
         int f1 = (int) (sorted.size()*0.25);
         int f2 = (int) (sorted.size()*0.5);
         int f3 = (int)(sorted.size()*0.75);
-        int f4 =  (sorted.size());
 
         SortedMap<Integer, Employee> t1 = sorted.subMap(0, f1);
         SortedMap<Integer, Employee> t2 = sorted.subMap(f1, f2);
         SortedMap<Integer, Employee> t3 = sorted.subMap(f2, f3);
         SortedMap<Integer, Employee> t4 = sorted.subMap(f3,  (sorted.size())+1);
 
-
-
+        /* Adding the work to the pool */
         Runnable work1 = new ThreadProcess(t1);
         Runnable work2 = new ThreadProcess(t2);
         Runnable work3 = new ThreadProcess(t3);
@@ -133,7 +158,11 @@ public class EmployeeDaoImpl implements DAO {
         executor.shutdown();
         while(!executor.isTerminated()){
         }
-        ConnectionFactory.closeConnection();
+        try {
+            ConnectionFactory.closeConnection();
+        } catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        }
         return false;
     }
 
@@ -259,10 +288,11 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Gets all the employees from the database */
     @Override
-    public HashMap<Integer, Employee> getEmployee() throws SQLException, IOException {
+    public HashMap<Integer, Employee> getEmployee() {
         StatementFactory getStmt = new StatementFactory();
         HashMap<Integer, Employee> emp2 = new HashMap<>();
-        try (PreparedStatement statement = getStmt.getAllEmployee()){
+        try (PreparedStatement statement = getStmt.getAllEmployee())
+        {
             ResultSet rS = statement.executeQuery();
             while (rS.next()){
                 Employee emp = new Employee();
@@ -278,14 +308,20 @@ public class EmployeeDaoImpl implements DAO {
                 emp.setSalary(rS.getInt(10));
                 emp2.put(rS.getInt("employeeID"),emp);
             }
-            //emp2.put(emp.getEmployeeID(),emp);
+        }catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        } finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
         return emp2;
     }
     /** Gets the employee record by id only */
     @Override
-    public HashMap<Integer, Employee> getEmployee(int employeeID) throws SQLException, IOException {
+    public HashMap<Integer, Employee> getEmployee(int employeeID) {
         StatementFactory getStmt = new StatementFactory();
         Employee emp = new Employee();
         HashMap<Integer, Employee> emp2 = new HashMap<>();
@@ -304,10 +340,17 @@ public class EmployeeDaoImpl implements DAO {
                 emp.setDoJ(resultSet.getDate("date_of_joining"));
                 emp.setSalary(resultSet.getInt("salary"));
             }
-            emp2.put(emp.getEmployeeID(), emp);
+        }catch (SQLException | IOException e) {
+            Logger.logger.error(e.toString());
+        } finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
         }
-        ConnectionFactory.closeConnection();
-      return emp2;
+        emp2.put(emp.getEmployeeID(), emp);
+        return emp2;
     }
 
     /** To be added to backlog fot next sprint*/
