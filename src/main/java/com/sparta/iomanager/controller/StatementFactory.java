@@ -12,27 +12,29 @@ public class StatementFactory {
     private static PreparedStatement updateStatement = null;
     private static PreparedStatement dropStatement = null;
     private static PreparedStatement selectAllEmployeeStatement = null;
-
+    private static ConnectionFactory conn = new ConnectionFactory();
 
 
     public static PreparedStatement getDropStatement() throws SQLException, IOException {
         if (dropStatement == null){
-            dropStatement = ConnectionFactory.getConnection().prepareStatement("DROP TABLE IF EXISTS Employee");
+            dropStatement = conn.getConnection().prepareStatement("DROP TABLE IF EXISTS Employee");
         }
+
         return dropStatement;
     }
 
 
     public static PreparedStatement getInsertStatement() throws SQLException, IOException {
-        if (insertStatement == null){
-            insertStatement = ConnectionFactory.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
-        }
+       // if (insertStatement == null){
+             ConnectionFactory conn = new ConnectionFactory();
+            insertStatement = conn.getConnection().prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
+       // }
         return insertStatement;
     }
 
     public static PreparedStatement getAllEmployee() throws SQLException, IOException{
         if (selectAllEmployeeStatement == null){
-            selectAllEmployeeStatement = ConnectionFactory.getConnection().prepareStatement("SELECT * FROM Employee");
+            selectAllEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM Employee");
         }
         return selectAllEmployeeStatement;
     }
@@ -43,7 +45,7 @@ public class StatementFactory {
 
     public static PreparedStatement getCreateStatement() throws SQLException, IOException{
         if (createStatement == null){
-            createStatement = ConnectionFactory.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "Employee ("
+            createStatement = conn.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + "Employee ("
                     + "employeeID INT PRIMARY KEY NOT NULL,"
                     + "name_prefix VARCHAR(5),"
                     + "first_name VARCHAR (20),"
@@ -62,7 +64,7 @@ public class StatementFactory {
     public static PreparedStatement getEmployeeStatement() throws SQLException, IOException {
         if (selectEmployeeStatement == null)
         {
-            selectEmployeeStatement = ConnectionFactory.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ?");
+            selectEmployeeStatement = conn.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ?");
         }
         return selectEmployeeStatement;
     }
@@ -71,15 +73,15 @@ public class StatementFactory {
 
 
 
-/*
+
     public static void closeStatement() throws SQLException {
         if (insertStatement != null) insertStatement.close();
         if (createStatement != null) createStatement.close();
         if (deleteStatement != null) deleteStatement.close();
         if (updateStatement !=null) updateStatement.close();
         if (dropStatement !=null) dropStatement.close();
+
     }
-*/
 
 
 
