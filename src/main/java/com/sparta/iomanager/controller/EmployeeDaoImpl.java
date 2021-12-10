@@ -90,7 +90,7 @@ public class EmployeeDaoImpl implements DAO {
     }
 
     /** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
-    class ThreadProcess implements Runnable {
+    static class ThreadProcess implements Runnable {
         SortedMap<Integer, Employee> data;
 
         public ThreadProcess(SortedMap<Integer, Employee> data) {
@@ -355,11 +355,12 @@ public class EmployeeDaoImpl implements DAO {
 
     /** To be added to backlog fot next sprint*/
     @Override
-    public int updateEmployee(int employeeID) {
+    public int updateEmployee(int employeeID, String firstName) {
         int updatedRecord = 0;
         StatementFactory getStmt = new StatementFactory();
-        try(PreparedStatement stmt = getStmt.getUpdateStatement()){
-            stmt.setInt(1,employeeID);
+        try(PreparedStatement stmt = getStmt.getUpdateStatement()) {
+            stmt.setString(1, firstName);
+            stmt.setInt(2, employeeID);
             updatedRecord = stmt.executeUpdate();
         } catch ( SQLException |  IOException e){
             Logger.logger.error(e.toString());

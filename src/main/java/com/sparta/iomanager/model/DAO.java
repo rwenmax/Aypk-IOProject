@@ -41,7 +41,7 @@ public interface DAO {
 
 
     /** Used for updating the employee records **/
-    int updateEmployee(int employeeID);
+    int updateEmployee(int employeeID, String firstName);
 
     /** Delete the employee records from the database */
     int deleteEmployee(int employeeID);

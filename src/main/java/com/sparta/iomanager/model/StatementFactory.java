@@ -117,7 +117,7 @@ public class StatementFactory implements StatementFactoryInterface {
     @Override
     public PreparedStatement getUpdateStatement() throws SQLException, IOException {
         if (updateStatement == null){
-           // updateStatement = conn.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ? ");
+            updateStatement = conn.getConnection().prepareStatement("UPDATE employee SET first_name = ? WHERE employeeID = ?");
         }
         return updateStatement;
     }
