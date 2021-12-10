@@ -16,9 +16,9 @@ import java.util.concurrent.Executors;
 public class EmployeeDaoImpl implements DAO{
     /*establish connection first */
 
+    /** Drops the database*/
     @Override
     public void dropDatabase() throws SQLException, IOException {
-
         StatementFactory getStmt = new StatementFactory();
         try(PreparedStatement statement = getStmt.getDatabaseDropStatement()){
             statement.executeUpdate();
@@ -28,7 +28,7 @@ public class EmployeeDaoImpl implements DAO{
         ConnectionFactory.closeConnection();
     }
 
-
+    /** Creates the database*/
     @Override
     public void createDatabase() throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
@@ -41,10 +41,7 @@ public class EmployeeDaoImpl implements DAO{
     }
 
 
-
-
-
-
+    /** Creates the table*/
     @Override
     public boolean createTable() throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
@@ -57,6 +54,7 @@ public class EmployeeDaoImpl implements DAO{
         return false;
     }
 
+    /**Dropping the table*/
     @Override
     public void dropTable() throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
@@ -66,7 +64,7 @@ public class EmployeeDaoImpl implements DAO{
         ConnectionFactory.closeConnection();
     }
 
-
+/** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
     class ThreadProcess implements Runnable {
         SortedMap<Integer, Employee> data;
 
@@ -105,6 +103,7 @@ public class EmployeeDaoImpl implements DAO{
         }
     }
 
+    /** Multi-threaded insertion */
     @Override
     public boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException {
         ExecutorService executor = Executors.newFixedThreadPool(20);
@@ -140,6 +139,7 @@ public class EmployeeDaoImpl implements DAO{
         return false;
     }
 
+    /** Uncomment this part of the code to use the Threaded based query */
     /*
 
      // This also works with tradtitional thread
@@ -259,7 +259,7 @@ public class EmployeeDaoImpl implements DAO{
 
 
 
-
+    /** Gets all the employees from the database */
     @Override
     public HashMap<Integer, Employee> getEmployee() throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
@@ -285,7 +285,7 @@ public class EmployeeDaoImpl implements DAO{
         ConnectionFactory.closeConnection();
         return emp2;
     }
-
+    /** Gets the employee record by id only */
     @Override
     public HashMap<Integer, Employee> getEmployee(int employeeID) throws SQLException, IOException {
         StatementFactory getStmt = new StatementFactory();
@@ -312,12 +312,12 @@ public class EmployeeDaoImpl implements DAO{
       return emp2;
     }
 
-    
+    /** To be added to backlog fot next sprint*/
     @Override
     public int updateEmployee(Employee employee) {
         return 0;
     }
-
+    /** To be added to backlog fot next sprint*/
     @Override
     public int deleteEmployee(Employee employee) {
         return 0;
