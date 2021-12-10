@@ -13,7 +13,7 @@
     <a href="#checklist">Checklist requirements implemented</a> •
   </h5>
   <h5>
-  	<a href="#screencast">Screencasts of the app running</a> •  
+  	<a href="#screencast">Screencast of the app running</a> •  
   </h5>
 	<h5>
   	<a href="#credits and contact">Credits</a> •  
