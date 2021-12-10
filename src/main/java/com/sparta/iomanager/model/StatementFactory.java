@@ -113,4 +113,20 @@ public class StatementFactory implements StatementFactoryInterface {
         }
         return selectEmployeeStatement;
     }
+    /***/
+    @Override
+    public PreparedStatement getUpdateStatement() throws SQLException, IOException {
+        if (updateStatement == null){
+           // updateStatement = conn.getConnection().prepareStatement("SELECT * FROM employee WHERE employeeID = ? ");
+        }
+        return updateStatement;
+    }
+
+    @Override
+    public PreparedStatement getDeleteStatement() throws SQLException, IOException {
+        if (deleteStatement == null){
+            deleteStatement = conn.getConnection().prepareStatement("DELETE FROM employee WHERE employeeID = ?");
+        }
+        return deleteStatement;
+    }
 }

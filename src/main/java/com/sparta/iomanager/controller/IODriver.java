@@ -1,7 +1,6 @@
 package com.sparta.iomanager.controller;
 
 import com.sparta.iomanager.model.Employee;
-import com.sparta.iomanager.model.EmployeeDaoImpl;
 import com.sparta.iomanager.view.FileFinder;
 import com.sparta.iomanager.view.Report;
 
@@ -19,12 +18,16 @@ public class IODriver {
         Map<Integer, Employee> employeeMap;
 
         employeeMap = read(inputManager);
+        databaseBuild();
         write(employeeMap);
 
         //Optional console printing methods
         //OutputManager.outPutResults(employeeMap);
         //OutputManager.outPutResults(new EmployeeDaoImpl().getEmployee());
 
+
+        //delete a record based on the id
+        //new EmployeeDaoImpl().deleteEmployee(4);
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
 
@@ -44,13 +47,22 @@ public class IODriver {
     }
 
     /**
+     * Creates the database using the connection.properties file,
+     * Run this if you would like to create brand-new database named "Employees"
+     */
+    private static void databaseBuild(){
+        new EmployeeDaoImpl().dropDatabase();
+        new EmployeeDaoImpl().createDatabase();
+    }
+
+    /**
      * Takes the map and inserts the data into a SQL Database by creating the table
      * Then inserting all the objects
      * @param employeeMap
      * @throws SQLException
      * @throws IOException
      */
-    private static void write(Map<Integer, Employee> employeeMap) throws SQLException, IOException{
+    private static void write(Map<Integer, Employee> employeeMap) {
         startSQL = System.nanoTime();
         new EmployeeDaoImpl().dropTable();
         new EmployeeDaoImpl().createTable();
