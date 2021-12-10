@@ -129,7 +129,7 @@ public class InputManager{
             e.printStackTrace();
         }
         while(threadsFinished < 4){
-            System.out.println(threadsFinished);
+            System.out.print("");
         }
         return fields;
     }
@@ -171,7 +171,7 @@ public class InputManager{
             e.printStackTrace();
         }
         while(threadsFinished < 4){
-            System.out.println(threadsFinished);
+            System.out.print("");
         }
         return fields;
     }
@@ -257,7 +257,7 @@ public class InputManager{
         Thread t4 = new Thread(threadedInsertion4);
         t4.start();
         while(threadsFinished < 4){
-            System.out.println(threadsFinished);
+            System.out.print("");
         }
         return employeeHashMap;
     }
