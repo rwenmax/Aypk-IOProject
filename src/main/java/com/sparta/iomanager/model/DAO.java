@@ -41,10 +41,10 @@ public interface DAO {
 
 
     /** Used for updating the employee records **/
-    int updateEmployee(Employee employee);
+    int updateEmployee(int employeeID);
 
     /** Delete the employee records from the database */
-    int deleteEmployee(Employee employee);
+    int deleteEmployee(int employeeID);
 
 
 

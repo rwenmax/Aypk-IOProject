@@ -355,14 +355,44 @@ public class EmployeeDaoImpl implements DAO {
 
     /** To be added to backlog fot next sprint*/
     @Override
-    public int updateEmployee(Employee employee) {
-        return 0;
+    public int updateEmployee(int employeeID) {
+        int updatedRecord = 0;
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement stmt = getStmt.getUpdateStatement()){
+            stmt.setInt(1,employeeID);
+            updatedRecord = stmt.executeUpdate();
+        } catch ( SQLException |  IOException e){
+            Logger.logger.error(e.toString());
+        }finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
+        return updatedRecord;
     }
+    }
+
+
+
+
     /** To be added to backlog fot next sprint*/
     @Override
-    public int deleteEmployee(Employee employee) {
-        return 0;
+    public int deleteEmployee(int employeeID) {
+        int deletedRecord = 0;
+        StatementFactory getStmt = new StatementFactory();
+        try(PreparedStatement stmt = getStmt.getDeleteStatement()){
+            stmt.setInt(1, employeeID);
+            deletedRecord = stmt.executeUpdate();
+        }catch ( SQLException |  IOException e){
+            Logger.logger.error(e.toString());
+        }finally {
+            try {
+                ConnectionFactory.closeConnection();
+            } catch (SQLException | IOException e) {
+                Logger.logger.error(e.toString());
+            }
+        }
+        return deletedRecord;
     }
-
-
 }

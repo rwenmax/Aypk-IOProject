@@ -13,4 +13,6 @@ public interface StatementFactoryInterface  {
     PreparedStatement getAllEmployee() throws SQLException, IOException;
     PreparedStatement getCreateStatement() throws SQLException, IOException;
     PreparedStatement getEmployeeStatement() throws SQLException, IOException;
+    PreparedStatement getUpdateStatement() throws SQLException, IOException;
+    PreparedStatement getDeleteStatement() throws SQLException, IOException;
 }
