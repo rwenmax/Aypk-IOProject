@@ -5,10 +5,10 @@
 
 
 <p align="center">
-  <a href="#project requirements">Project requirements</a> •
+  <a href="#project">Project</a> •
   <a href="#checklist">Checklist</a> •
   <a href="#screencast">Screencast</a> •
-  <a href="#credits and contact">Credits and contact</a> •
+  <a href="#credits">Credits and contact</a> •
   <a href="#license">License</a> • 
 </p>
 
@@ -17,7 +17,7 @@
 
 ---
 
-### Project requirements
+### Project
 
 
 
@@ -43,7 +43,7 @@ TO FILL IN
 
 ---
 
-### Credits and contact
+### Credits
 
 [Kamil](https://github.com/rwenmax)
 
