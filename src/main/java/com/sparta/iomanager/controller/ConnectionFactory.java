@@ -1,8 +1,8 @@
 package com.sparta.iomanager.controller;
 
 import com.sparta.iomanager.view.Report;
-
 import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -10,25 +10,32 @@ import java.util.Properties;
 
 public class ConnectionFactory {
 
+    private static String databaseName ="";
+    private  Connection theConnection  = null;
 
-    private static Connection theConnection  = null;
 
-    public static Connection getConnection() throws SQLException, IOException {
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+
+    public  Connection getConnection() throws SQLException, IOException {
         /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
         if (theConnection==null || theConnection.isClosed()) {
             Properties properties = new Properties();
             properties.load(new FileReader("connection.properties"));
-            String url = properties.getProperty("dbUrl");
+            String url = properties.getProperty("dbUrl") + databaseName;
             String userId = properties.getProperty("dbUserName");
             String userPassword = properties.getProperty("dbUserPassword");
             //theConnection = DriverManager.getConnection(url, userId, userPassword);
-            theConnection = DriverManager.getConnection(url +"?rewriteBatchedStatements=true", userId, userPassword);
+            theConnection = DriverManager.getConnection(url  + "?rewriteBatchedStatements=true", userId, userPassword);
         }
         return theConnection;
     }
 
-
-    public static Connection getConnection2() throws SQLException, IOException {
+/*
+    public Connection getConnection2() throws SQLException, IOException {
         Properties props;
         String url = null;
         String userId = null;
@@ -43,19 +50,17 @@ public class ConnectionFactory {
             e.printStackTrace();
         }
 
-        try (Connection theConn = DriverManager.getConnection(url, userId, password))
+        try (Connection theConn = DriverManager.getConnection(url + databaseName + "?rewriteBatchedStatements=true", userId, password))
         {
             return theConn;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 
-
-
-   public static void closeConnection() throws SQLException, IOException {
+    public static void closeConnection() throws SQLException, IOException {
         ConnectionFactory theConnection = new ConnectionFactory();
         if (theConnection.getConnection() !=null) theConnection.getConnection().close();
     }
