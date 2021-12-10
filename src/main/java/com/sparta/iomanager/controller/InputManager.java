@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class InputManager{
+    // A class to make an object of for multi-threading file reading
     public class ThreadedRead implements Runnable{
 
         String inFile;
@@ -46,6 +47,7 @@ public class InputManager{
             threadsFinished++;
         }
     }
+    // A class to make an object of for multi-threading file reading with streams
     public class ThreadedStreamRead implements Runnable{
 
         String inFile;
@@ -77,12 +79,16 @@ public class InputManager{
             threadsFinished++;
         }
     }
+    // Hashmaps for Employee objects and their duplicates
     private Map<Integer, Employee> employeeHashMap = new HashMap<>();
     private Map<Integer, Employee> duplicateValues = new HashMap<>();
 
     private String[][] fields = new String[0][0];
     private int threadsFinished = 0;
 
+    // Non-stream based read file approach
+    // Reads in the amount of lines, divdes the portions of the data into 4 quarters
+    // These quarters are separately read by 4 threaded objects
     public String[][] readFile(String inFile){
         threadsFinished = 0;
         try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
@@ -119,6 +125,7 @@ public class InputManager{
         }
         return fields;
     }
+    // Stream based read file approach
     public String[][] readStreamFile(String inFile){
         threadsFinished = 0;
         try (BufferedReader inp = new BufferedReader(new FileReader(inFile))){
@@ -156,6 +163,7 @@ public class InputManager{
         return fields;
     }
 
+    // A class to make an object of for multi-threaded data insertion into the Hashmaps
     public class ThreadedInsertion implements Runnable{
         String[][] fieldArray = new String[0][0];
         int start, end;
@@ -166,6 +174,7 @@ public class InputManager{
         }
         @Override
         public void run() {
+            // Loops through data and validates it before adding it to the object
             for (int i = start; i < end; i++){
                 Employee employee = new Employee();
                 int id = 0;
@@ -200,6 +209,8 @@ public class InputManager{
         }
     }
 
+    // Insertion method that divdes the array matrix of strings into 4
+    // Then runs 4 objects on seperate threads to insert them into the Hashmaps
     public Map insertion(String[][] fields) {
         threadsFinished = 0;
         int thread1, thread2, thread3;
@@ -229,6 +240,7 @@ public class InputManager{
         return employeeHashMap;
     }
 
+    // Synchronized variables for multi-threading
     private synchronized void putEmployeeHashMap(int id, Employee employee) {
         employeeHashMap.put(id, employee);
     }
@@ -241,6 +253,7 @@ public class InputManager{
         fields[x][y] = value;
     }
 
+    // Get methods for hashmaps
     public Map<Integer, Employee> getEmployeeHashMap() {
         return employeeHashMap;
     }
