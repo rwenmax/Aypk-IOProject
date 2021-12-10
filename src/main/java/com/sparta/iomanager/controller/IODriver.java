@@ -4,6 +4,7 @@ import com.sparta.iomanager.model.Employee;
 import com.sparta.iomanager.view.FileFinder;
 import com.sparta.iomanager.view.Report;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
@@ -40,8 +41,9 @@ public class IODriver {
      */
     private static Map<Integer, Employee> read(InputManager inputManager){
         FileFinder fileFinder = new FileFinder();
+        String fileName = fileFinder.findFile();
         startRead = System.nanoTime();
-        Map<Integer, Employee> map = inputManager.insertion(inputManager.readStreamFile(fileFinder.findFile()));
+        Map<Integer, Employee> map = inputManager.insertion(inputManager.readStreamFile(fileName));
         endRead = System.nanoTime();
         return map;
     }
