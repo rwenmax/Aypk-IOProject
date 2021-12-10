@@ -19,19 +19,27 @@
 
 ### Project
 
-
-
-TO FILL IN
+>Create a project that reads in a CSV file (of different sizes) and add the values inside a database that you create.
+>
+>Keep in mind when coding of SOLID principles, design patterns, Java standard practices, git conflicts when merging, JDBC configuration and TDD. 
+>
+>Implement multi-threading and time the difference between single vs multi-threaded approach. While coding make use of Java streams and implement functional programming along side OOP. 
+>
+>Make sure the JDBC configuration file is not saved in git.
 
 ----
 
 ### Checklist
 
-- [x] Req 1
-- [ ] Req 2
-- [ ] Req 3
-- [ ] Req 4
-- [ ] Req 5
+- [x] SOLID principles
+- [x] DAO design patterns
+- [x] Java standard practices
+- [x] Use of git and sorting merging conflicts
+- [x] Use of JDBC
+- [x] TDD approach
+- [x] Multi-threading implementation
+- [x] Use of Java Streams and functional programming
+- [x] Compare single vs multi thread approach
 
 ----
 
@@ -45,13 +53,7 @@ TO FILL IN
 
 ### Credits
 
-[Kamil](https://github.com/rwenmax)
-
-[Pruthvi](https://github.com/pruthvi-lalji)
-
-[Yefri](https://github.com/grimz5129)
-
-[Alex](https://github.com/alexsusanu)
+[Kamil](https://github.com/rwenmax)	[Pruthvi](https://github.com/pruthvi-lalji) 	[Yefri](https://github.com/grimz5129) 	[Alex](https://github.com/alexsusanu)
 
 ----
 
