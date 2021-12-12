@@ -6,15 +6,14 @@ import com.sparta.iomanager.model.StatementFactory;
 import com.sparta.iomanager.model.util.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class EmployeeDaoImpl implements DAO {
     /*establish connection first */
@@ -91,16 +90,16 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
     static class ThreadProcess implements Runnable {
-        SortedMap<Integer, Employee> data;
+        HashMap<Integer, Employee> data;
 
-        public ThreadProcess(SortedMap<Integer, Employee> data) {
+        public ThreadProcess(HashMap<Integer, Employee> data) {
             this.data = data;
         }
         @Override
         public void run() {
             try {
-                StatementFactory stmt22 = new StatementFactory();
-                PreparedStatement stmt2 = stmt22.getInsertStatement();
+                StatementFactory getStmt = new StatementFactory();
+                PreparedStatement stmt2 = getStmt.getInsertStatement();
                 for (Employee e : data.values()) {
                     stmt2.setInt(1, e.getEmployeeID());
                     stmt2.setString(2, e.getToc());
@@ -136,21 +135,47 @@ public class EmployeeDaoImpl implements DAO {
         }
         /* Convert HashMap into SortedMap inorder to split the dataset into 4 parts for multi-threading to occur */
         ExecutorService executor = Executors.newFixedThreadPool(numThreads); //Create thread pool of 10 threads, can be configured!
-        SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
-        int f1 = (int) (sorted.size()*0.25);
-        int f2 = (int) (sorted.size()*0.5);
-        int f3 = (int)(sorted.size()*0.75);
 
-        SortedMap<Integer, Employee> t1 = sorted.subMap(0, f1);
-        SortedMap<Integer, Employee> t2 = sorted.subMap(f1, f2);
-        SortedMap<Integer, Employee> t3 = sorted.subMap(f2, f3);
-        SortedMap<Integer, Employee> t4 = sorted.subMap(f3,  (sorted.size())+1);
+        /** Convert the hashmap Keys int arraylist for spliting them into 4 different parts */
+        ArrayList<Integer> list = employee.keySet().stream().collect(Collectors.toCollection(ArrayList::new));
+
+
+        //get the list size
+        int sizeOne = (int)(list.size()*0.25);
+        int sizeTwo = (int)(list.size()*0.5);
+        int sizeThree = (int)(list.size()*0.75);
+        int sizeFour = list.size();
+        int counter = 0;
+
+        /** Setting up the 4 hashmap to be used*/
+        HashMap<Integer, Employee> map1 = new HashMap<>();
+        HashMap<Integer, Employee> map2 = new HashMap<>();
+        HashMap<Integer, Employee> map3 = new HashMap<>();
+        HashMap<Integer, Employee> map4 = new HashMap<>();
+        for (Map.Entry<Integer, Employee> e : employee.entrySet()){
+            if (counter < sizeOne){
+                map1.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter < sizeTwo){
+                map2.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter < sizeThree){
+                map3.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter <= sizeFour){
+                map4.put(e.getKey(), e.getValue());
+                counter++;
+            }
+        }
 
         /* Adding the work to the pool */
-        Runnable work1 = new ThreadProcess(t1);
-        Runnable work2 = new ThreadProcess(t2);
-        Runnable work3 = new ThreadProcess(t3);
-        Runnable work4 = new ThreadProcess(t4);
+        Runnable work1 = new ThreadProcess(map1);
+        Runnable work2 = new ThreadProcess(map2);
+        Runnable work3 = new ThreadProcess(map3);
+        Runnable work4 = new ThreadProcess(map4);
         executor.execute(work1);
         executor.execute(work2);
         executor.execute(work3);
