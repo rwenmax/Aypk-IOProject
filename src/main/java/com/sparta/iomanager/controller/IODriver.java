@@ -7,6 +7,7 @@ import com.sparta.iomanager.view.Report;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public class IODriver {
@@ -16,11 +17,20 @@ public class IODriver {
     static long endSQL;
     public static void main(String[] args) throws SQLException, IOException {
         InputManager inputManager = new InputManager();
+        UserInput uI = new UserInput();
         Map<Integer, Employee> employeeMap;
 
         employeeMap = read(inputManager);
         databaseBuild();
-        write(employeeMap);
+        List<Integer> optionsSelected = uI.userInput();
+        if (optionsSelected.get(0) == 1){
+            //multi-threaded
+            write(employeeMap,optionsSelected.get(1));
+        }
+        else{
+            writeN(employeeMap);
+        }
+
 
         //Optional console printing methods
         //OutputManager.outPutResults(employeeMap);
@@ -28,7 +38,7 @@ public class IODriver {
 
 
         //delete a record based on the id
-        //new EmployeeDaoImpl().deleteEmployee(4);
+        //deleteRecord();
         Report.runReport(inputManager, startRead, endRead, startSQL, endSQL);
     }
 
@@ -64,11 +74,49 @@ public class IODriver {
      * @throws SQLException
      * @throws IOException
      */
-    private static void write(Map<Integer, Employee> employeeMap) {
+    private static void write(Map<Integer, Employee> employeeMap, int threads) {
         startSQL = System.nanoTime();
         new EmployeeDaoImpl().dropTable();
         new EmployeeDaoImpl().createTable();
-        new EmployeeDaoImpl().insertEmployee(employeeMap);
+        new EmployeeDaoImpl().insertEmployee(employeeMap, threads);  /* Provide number of threads to be used */
         endSQL = System.nanoTime();
     }
+
+
+    /**
+     * Used for normal tpye insertion into the database, without multi-threaded.
+     * @param employeeMap
+     */
+    private static void writeN(Map<Integer, Employee> employeeMap) {
+        startSQL = System.nanoTime();
+        new EmployeeDaoImpl().dropTable();
+        new EmployeeDaoImpl().createTable();
+        new EmployeeDaoImpl().insertEmployee(employeeMap);  /* Provide number of threads to be used */
+        endSQL = System.nanoTime();
+    }
+
+
+
+
+    /**
+     * Can be used to update a record of first name given the employeeID
+     */
+    private static void updateRecord(){
+        new EmployeeDaoImpl().updateEmployee(65499,"James");
+    }
+
+
+    /**
+     * Can be used to delete a record from employee's table given the employeeID
+     */
+    private static void deleteRecord(){
+        new EmployeeDaoImpl().deleteEmployee(65499);
+    }
+
+
+
+
+
+
+
 }

@@ -130,9 +130,12 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Multi-threaded insertion */
     @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) {
+    public boolean insertEmployee(Map<Integer, Employee> employee, int numThreads) {
+        if (numThreads == 0 || numThreads >= 100){
+            numThreads = 10;
+        }
         /* Convert HashMap into SortedMap inorder to split the dataset into 4 parts for multi-threading to occur */
-        ExecutorService executor = Executors.newFixedThreadPool(10); //Create thread pool of 10 threads, can be configured!
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads); //Create thread pool of 10 threads, can be configured!
         SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
         int f1 = (int) (sorted.size()*0.25);
         int f2 = (int) (sorted.size()*0.5);
@@ -254,11 +257,10 @@ public class EmployeeDaoImpl implements DAO {
 
 
 
-
-//This works
-  /*  @Override
-    public synchronized boolean insertEmployee(Map<Integer, Employee> employee) {
-            try (PreparedStatement statement = StatementFactory.getInsertStatement()) {
+    @Override
+    public  boolean insertEmployee(Map<Integer, Employee> employee) {
+        StatementFactory getStmt = new StatementFactory();
+            try (PreparedStatement statement = getStmt.getInsertStatementN()) {
                 for (Employee e : employee.values()) {
                     //they were all .setObject
                     statement.setInt(1, e.getEmployeeID());
@@ -277,11 +279,16 @@ public class EmployeeDaoImpl implements DAO {
                 int[] recordsAdded = statement.executeBatch();
             } catch (SQLException | IOException e){
                 e.printStackTrace();
+            }finally {
+                try {
+                    ConnectionFactory.closeConnection();
+                } catch (SQLException | IOException e) {
+                    Logger.logger.error(e.toString());
+                }
             }
         System.out.println("Inserted");
-        //ConnectionFactory.closeConnection();
-        return false;
-    }*/
+        return true;
+    }
 
 
 

@@ -72,6 +72,27 @@ public class StatementFactory implements StatementFactoryInterface {
     }
 
     /**
+     *
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     *
+     * Test method for insertion without multithreading and batch rewriting!
+     *
+     */
+    public  PreparedStatement getInsertStatementN() throws SQLException, IOException {
+        // if (insertStatement == null){
+        ConnectionFactory conn = new ConnectionFactory();
+        conn.setDatabaseName(databaseName);
+        insertStatement = conn.getConnectionT().
+                prepareStatement("INSERT INTO Employee VALUES (?,?,?,?,?,?,?,?,?,?)");
+        // }
+        return insertStatement;
+    }
+
+
+
+    /**
      * Get all the employees from the table
      */
     public  PreparedStatement getAllEmployee() throws SQLException, IOException{
