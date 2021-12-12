@@ -96,6 +96,13 @@ public class IODriver {
     }
 
 
+    /**
+     * Gets the employee records from the database based on the employeeID
+     */
+    private static void getRecord(){
+        new EmployeeDaoImpl().getEmployee(65499);
+    }
+
 
 
     /**

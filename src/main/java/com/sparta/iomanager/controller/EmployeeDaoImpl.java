@@ -152,6 +152,7 @@ public class EmployeeDaoImpl implements DAO {
         HashMap<Integer, Employee> map2 = new HashMap<>();
         HashMap<Integer, Employee> map3 = new HashMap<>();
         HashMap<Integer, Employee> map4 = new HashMap<>();
+        /** Iterate over the employee map, and splits it into 4 part*/
         for (Map.Entry<Integer, Employee> e : employee.entrySet()){
             if (counter < sizeOne){
                 map1.put(e.getKey(), e.getValue());
