@@ -255,8 +255,9 @@ public class EmployeeDaoImpl implements DAO {
 */
 
 
-
-
+    /**
+     * This method inputs data into the database without any multi-threading or batch rewriting.
+     */
     @Override
     public  boolean insertEmployee(Map<Integer, Employee> employee) {
         StatementFactory getStmt = new StatementFactory();

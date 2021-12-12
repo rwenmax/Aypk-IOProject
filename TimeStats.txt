@@ -4,6 +4,15 @@ Time taken to read file: 2109 ms
 The List Size of Employees: 9943
 The List Size of Duplicates: 57
 
+
+The List Size of Employees: 65499
+The List Size of Duplicates: 0
+Time taken to read the file: 828 ms
+Time taken to write the file into MySQL: 326785 ms
+
+
+
+
 With Threading:
 Time taken to read file: 1327 ms
 
