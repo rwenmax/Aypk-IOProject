@@ -29,6 +29,26 @@ public class ConnectionFactory {
         return theConnection;
     }
 
+
+
+    public  Connection getConnectionT() throws SQLException, IOException {
+        /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
+        if (theConnection==null || theConnection.isClosed()) {
+            Properties properties = new Properties();
+            properties.load(new FileReader("connection.properties"));
+            String url = properties.getProperty("dbUrl") + databaseName;
+            String userId = properties.getProperty("dbUserName");
+            String userPassword = properties.getProperty("dbUserPassword");
+            //theConnection = DriverManager.getConnection(url, userId, userPassword);
+            theConnection = DriverManager.getConnection(url  , userId, userPassword);
+        }
+        return theConnection;
+    }
+
+
+
+
+
 /*
     public Connection getConnection2() throws SQLException, IOException {
         Properties props;

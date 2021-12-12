@@ -30,6 +30,9 @@ public interface DAO {
     void dropTable() throws SQLException, IOException;
 
     /** Method to insert data into database, uses Map to collect data and insert it into that database  **/
+    boolean insertEmployee(Map<Integer, Employee> employee, int numThreads) throws SQLException, IOException;
+
+    /** This can be used to test insertion method without any multi-threading*/
     boolean insertEmployee(Map<Integer, Employee> employee) throws SQLException, IOException;
 
 
@@ -41,7 +44,7 @@ public interface DAO {
 
 
     /** Used for updating the employee records **/
-    int updateEmployee(int employeeID);
+    int updateEmployee(int employeeID, String firstName);
 
     /** Delete the employee records from the database */
     int deleteEmployee(int employeeID);

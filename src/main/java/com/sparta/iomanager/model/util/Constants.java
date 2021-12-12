@@ -28,4 +28,7 @@ public class Constants {
 
     public static final String CSV_SEPARATOR = ",";
 
+    public static final int MULTI_THREADED = 1;
+    public static final int NON_THREADED = 2;
+
 }

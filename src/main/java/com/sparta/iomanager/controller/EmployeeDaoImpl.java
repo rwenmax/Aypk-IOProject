@@ -6,15 +6,14 @@ import com.sparta.iomanager.model.StatementFactory;
 import com.sparta.iomanager.model.util.Logger;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class EmployeeDaoImpl implements DAO {
     /*establish connection first */
@@ -90,17 +89,17 @@ public class EmployeeDaoImpl implements DAO {
     }
 
     /** Multi-threaded process to insert the data into the database takes around 2500ms to insert database of 130998 records, compare to not threaded taking 290405ms to insert 65499 records */
-    class ThreadProcess implements Runnable {
-        SortedMap<Integer, Employee> data;
+    static class ThreadProcess implements Runnable {
+        HashMap<Integer, Employee> data;
 
-        public ThreadProcess(SortedMap<Integer, Employee> data) {
+        public ThreadProcess(HashMap<Integer, Employee> data) {
             this.data = data;
         }
         @Override
         public void run() {
             try {
-                StatementFactory stmt22 = new StatementFactory();
-                PreparedStatement stmt2 = stmt22.getInsertStatement();
+                StatementFactory getStmt = new StatementFactory();
+                PreparedStatement stmt2 = getStmt.getInsertStatement();
                 for (Employee e : data.values()) {
                     stmt2.setInt(1, e.getEmployeeID());
                     stmt2.setString(2, e.getToc());
@@ -130,24 +129,54 @@ public class EmployeeDaoImpl implements DAO {
 
     /** Multi-threaded insertion */
     @Override
-    public boolean insertEmployee(Map<Integer, Employee> employee) {
+    public boolean insertEmployee(Map<Integer, Employee> employee, int numThreads) {
+        if (numThreads == 0 || numThreads >= 100){
+            numThreads = 10;
+        }
         /* Convert HashMap into SortedMap inorder to split the dataset into 4 parts for multi-threading to occur */
-        ExecutorService executor = Executors.newFixedThreadPool(10); //Create thread pool of 10 threads, can be configured!
-        SortedMap<Integer, Employee> sorted = new TreeMap<>(employee);
-        int f1 = (int) (sorted.size()*0.25);
-        int f2 = (int) (sorted.size()*0.5);
-        int f3 = (int)(sorted.size()*0.75);
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads); //Create thread pool of 10 threads, can be configured!
 
-        SortedMap<Integer, Employee> t1 = sorted.subMap(0, f1);
-        SortedMap<Integer, Employee> t2 = sorted.subMap(f1, f2);
-        SortedMap<Integer, Employee> t3 = sorted.subMap(f2, f3);
-        SortedMap<Integer, Employee> t4 = sorted.subMap(f3,  (sorted.size())+1);
+        /** Convert the hashmap Keys int arraylist for spliting them into 4 different parts */
+        ArrayList<Integer> list = employee.keySet().stream().collect(Collectors.toCollection(ArrayList::new));
+
+
+        //get the list size
+        int sizeOne = (int)(list.size()*0.25);
+        int sizeTwo = (int)(list.size()*0.5);
+        int sizeThree = (int)(list.size()*0.75);
+        int sizeFour = list.size();
+        int counter = 0;
+
+        /** Setting up the 4 hashmap to be used*/
+        HashMap<Integer, Employee> map1 = new HashMap<>();
+        HashMap<Integer, Employee> map2 = new HashMap<>();
+        HashMap<Integer, Employee> map3 = new HashMap<>();
+        HashMap<Integer, Employee> map4 = new HashMap<>();
+        /** Iterate over the employee map, and splits it into 4 part*/
+        for (Map.Entry<Integer, Employee> e : employee.entrySet()){
+            if (counter < sizeOne){
+                map1.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter < sizeTwo){
+                map2.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter < sizeThree){
+                map3.put(e.getKey(), e.getValue());
+                counter++;
+            }
+            else if (counter <= sizeFour){
+                map4.put(e.getKey(), e.getValue());
+                counter++;
+            }
+        }
 
         /* Adding the work to the pool */
-        Runnable work1 = new ThreadProcess(t1);
-        Runnable work2 = new ThreadProcess(t2);
-        Runnable work3 = new ThreadProcess(t3);
-        Runnable work4 = new ThreadProcess(t4);
+        Runnable work1 = new ThreadProcess(map1);
+        Runnable work2 = new ThreadProcess(map2);
+        Runnable work3 = new ThreadProcess(map3);
+        Runnable work4 = new ThreadProcess(map4);
         executor.execute(work1);
         executor.execute(work2);
         executor.execute(work3);
@@ -252,13 +281,13 @@ public class EmployeeDaoImpl implements DAO {
 */
 
 
-
-
-
-//This works
-  /*  @Override
-    public synchronized boolean insertEmployee(Map<Integer, Employee> employee) {
-            try (PreparedStatement statement = StatementFactory.getInsertStatement()) {
+    /**
+     * This method inputs data into the database without any multi-threading or batch rewriting.
+     */
+    @Override
+    public  boolean insertEmployee(Map<Integer, Employee> employee) {
+        StatementFactory getStmt = new StatementFactory();
+            try (PreparedStatement statement = getStmt.getInsertStatementN()) {
                 for (Employee e : employee.values()) {
                     //they were all .setObject
                     statement.setInt(1, e.getEmployeeID());
@@ -277,11 +306,16 @@ public class EmployeeDaoImpl implements DAO {
                 int[] recordsAdded = statement.executeBatch();
             } catch (SQLException | IOException e){
                 e.printStackTrace();
+            }finally {
+                try {
+                    ConnectionFactory.closeConnection();
+                } catch (SQLException | IOException e) {
+                    Logger.logger.error(e.toString());
+                }
             }
         System.out.println("Inserted");
-        //ConnectionFactory.closeConnection();
-        return false;
-    }*/
+        return true;
+    }
 
 
 
@@ -355,11 +389,12 @@ public class EmployeeDaoImpl implements DAO {
 
     /** To be added to backlog fot next sprint*/
     @Override
-    public int updateEmployee(int employeeID) {
+    public int updateEmployee(int employeeID, String firstName) {
         int updatedRecord = 0;
         StatementFactory getStmt = new StatementFactory();
-        try(PreparedStatement stmt = getStmt.getUpdateStatement()){
-            stmt.setInt(1,employeeID);
+        try(PreparedStatement stmt = getStmt.getUpdateStatement()) {
+            stmt.setString(1, firstName);
+            stmt.setInt(2, employeeID);
             updatedRecord = stmt.executeUpdate();
         } catch ( SQLException |  IOException e){
             Logger.logger.error(e.toString());
