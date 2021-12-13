@@ -7,7 +7,7 @@ import java.util.Properties;
 public class ConnectionFactory {
 
     private static String databaseName ="";
-    private  Connection theConnection  = null;
+    private  static Connection theConnection  = null;
 
 
     public void setDatabaseName(String databaseName) {
@@ -15,7 +15,7 @@ public class ConnectionFactory {
     }
 
 
-    public  Connection getConnection() throws SQLException, IOException {
+    public  static Connection getConnection() throws SQLException, IOException {
         /* Reading the properties file for user and database Connection, database should be created with the name "Employees"*/
         if (theConnection==null || theConnection.isClosed()) {
             Properties properties = new Properties();
@@ -76,8 +76,7 @@ public class ConnectionFactory {
 
 
     public static void closeConnection() throws SQLException, IOException {
-        ConnectionFactory theConnection = new ConnectionFactory();
-        if (theConnection.getConnection() !=null) theConnection.getConnection().close();
+        if (theConnection !=null) theConnection.close();
     }
 
 }
